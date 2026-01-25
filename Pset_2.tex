@@ -328,6 +328,31 @@ WLOG, assume that one player deviates. At round $i$, the set of remaining pebble
   \end{enumerate}
 
   If player 1 plays the dominant strategy, the results will be as follows:
+\begin{figure}[H]
+\centering
+\caption{Dijkstra's Aglorithm}
+\begin{tabular}{c l c}
+\toprule
+Curr Node & Dist & Queue \\
+\midrule
+(start) s & 0 & $\{(l_{s\rightarrow a}, 4), (l_{s\rightarrow c}, 9), (l_{s\rightarrow e}, 14)\}$ \\
+s $\rightarrow$ a & 4 & $\{(l_{a\rightarrow b}, 8), (l_{s\rightarrow c}, 9), (l_{s\rightarrow e}, 14)\}$ \\
+a $\rightarrow$ b & 8 & $\{(l_{s\rightarrow c}, 9), (l_{b\rightarrow c}, 9), (l_{s\rightarrow e}, 14), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+s $\rightarrow$ c & 9 & $\{(l_{b\rightarrow c}, 9), (l_{c\rightarrow a}, 13), (l_{c\rightarrow e}, 13), (l_{s\rightarrow e}, 14), (l_{c\rightarrow d}, 20), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+b $\rightarrow$ c & 9 & $\{(l_{c\rightarrow a}, 13), (l_{c\rightarrow e}, 13), (l_{s\rightarrow e}, 14), (l_{c\rightarrow d}, 20), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+c $\rightarrow$ a & Found & $\{(l_{c\rightarrow e}, 13), (l_{s\rightarrow e}, 14), (l_{c\rightarrow d}, 20), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+c $\rightarrow$ e & 13 & $\{(l_{s\rightarrow e}, 14), (l_{e\rightarrow f}, 18), (l_{c\rightarrow d}, 20), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+s $\rightarrow$ e & Found & $\{(l_{e\rightarrow f}, 18), (l_{c\rightarrow d}, 20), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+e $\rightarrow$ f & 18 & $\{(l_{c\rightarrow d}, 20), (l_{f\rightarrow c}, 21), (l_{f\rightarrow d}, 22), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24), (l_{f\rightarrow t}, 24)\}$ \\
+c $\rightarrow$ d & 20 & $\{(l_{f\rightarrow c}, 21), (l_{f\rightarrow d}, 22), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24), (l_{f\rightarrow t}, 24), (l_{d\rightarrow t}, 25)\}$ \\
+f $\rightarrow$ c & Found & $\{(l_{f\rightarrow d}, 22), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24), (l_{f\rightarrow t}, 24), (l_{d\rightarrow t}, 25)\}$ \\
+f $\rightarrow$ d & Found & $\{(l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24), (l_{f\rightarrow t}, 24), (l_{d\rightarrow t}, 25)\}$ \\
+b $\rightarrow$ d & Found & $\{(l_{b\rightarrow t}, 24), (l_{f\rightarrow t}, 24), (l_{d\rightarrow t}, 25)\}$ \\
+b $\rightarrow$ t & 24 & $\{(l_{f\rightarrow t}, 24), (l_{d\rightarrow t}, 25)\}$ \\
+f $\rightarrow$ t & 24 & $\{(l_{d\rightarrow t}, 25)\}$ \\
+\end{tabular}
+\end{figure}
+
 \end{enumerate}
 
 \end{document}
