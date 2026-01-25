@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1769368596.11266 "/Users/nyt/Algorithms/Algorithms-PSet2-1/Pset_2.tex" "Pset_2.pdf" "Pset_2" 1769368598.03536 0
-  "/Users/nyt/Algorithms/Algorithms-PSet2-1/Pset_2.tex" 1769368595.45717 17725 882994b423e82d5a318151e76380015e ""
+["pdflatex"] 1769382013.24087 "/Users/nyt/Algorithms/Algorithms-PSet2-1/Pset_2.tex" "Pset_2.pdf" "Pset_2" 1769382014.33618 2
+  "/Users/nyt/Algorithms/Algorithms-PSet2-1/Pset_2.tex" 1769382011.29731 18195 956b737d020ce0c9a7b2b1a0bae0ebad ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -166,8 +166,8 @@
   "/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1769201402 5467155 19efa205003f9ecad95fbbaa6ff24da1 ""
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1741450574 3345740 46b66fdb0378f7bf5921b5eabf1762b8 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
-  "Pset_2.aux" 1769368597.67047 282 10e39f70bf61b168148d199f87f90827 "pdflatex"
-  "Pset_2.tex" 1769368595.45717 17725 882994b423e82d5a318151e76380015e ""
+  "Pset_2.aux" 1769382014.22675 282 10e39f70bf61b168148d199f87f90827 "pdflatex"
+  "Pset_2.tex" 1769382011.29731 18195 956b737d020ce0c9a7b2b1a0bae0ebad ""
   (generated)
   "Pset_2.aux"
   "Pset_2.log"

@@ -309,12 +309,39 @@ Therefore the total unhappiness changes by $u_k(l_{k+1}) - u_{k+1}(l_k)$. From t
 \section*{Problem 5: A Pebble Game (20 points)}
 Two players are playing the following pebble game. There is a collection of pebbles of different colors. On each of his/her turns, a player takes all of the pebbles of any one color. Each player aims to maximize the number of pebbles they take.
 \begin{enumerate}
-\item[(a)] 5 points: Assuming that each pebble only has one color, give an optimal greedy strategy.  jgew9ghhwei
-\item[(b)] 10 points: Prove that your answer is correct by showing that if both players follow this strategy, neither player can benefit by deviating from it.
-\item[(c)] 5 points: If pebbles can have more than one color, is this strategy still optimal? Either prove that it is still optimal or give a counterexample. Hint is available.
+\item[(a)] At each turn, the player takes the color with the most amount of pebbles.
+
+\item[(b)] Let $S = \{c_1, c_2, \dots, c_n\}$ be the number of pebbles of different colors ordered by magnitude, so $c_i \geq c_j, \forall i < j$. The greedy strategy states that at any turn, you take the color with the great number of pebbles. We denote one round as two turns with both players taking one color.
+
+We claim that the results of each round are
+
+WLOG, assume that one player deviates. At round $i$, the set of remaining pebbles looks like $S = \{c_{i_1}, c_{i_2}, \dots, c_{i_n}\}$. If player 1 deviates and chooses $c_{i_j}$, this  player 2 will choose $c_{i_1}$. This is 
+
+\item[(c)] Let there be 12 pebbles total with the following distributions:
+  \begin{enumerate}
+    \item[1)] 6 solid purple
+    \item[2)] 4 orange / purple
+    \item[3)] 6 solid yellow
+    \item[4)] 4 orange / yellow
+    \item[5)] 1 solid orange
+    \item[6)] 1 solid blue
+  \end{enumerate}
+
+  If player 1 plays the dominant strategy, the results will be as follows:
+
+  \begin{table}[H]
+  \centering
+  \caption{Dijkstra's Aglorithm}
+  \begin{tabular}{c l c}
+    \toprule
+    Round & Player 1 & Player 2
+    \midrule
+    1 & 10 purple & 10 orange \\
+    2 & 1 orange & 1 Blue\\
+    \bottomrule
+  \end{tabular}
+  \end{table}
+
 \end{enumerate}
-\newpage
-\noindent Hints:\\
-5c. While the strategy in part a is optimal, sometimes less greedy moves may be equally good. Start with a situation where each pebble only has one color but a less greedy move is just as good as the greediest move and then add more colors to make the less greedy move better.
 
 \end{document}
