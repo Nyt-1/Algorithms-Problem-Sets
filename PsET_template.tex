@@ -1,0 +1,120 @@
+\documentclass[12pt]{article}
+ \usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ}
+\usepackage{booktabs}
+\usepackage{}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\pagestyle{fancy}
+\setlength{\headheight}{65pt}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{sol}
+    {\emph{Solution:}
+    }
+    {
+    \qed
+    }
+\specialcomment{com}{ \color{blue} \textbf{Comment:} }{\color{black}} %for instructor comments while grading
+\NewEnviron{probscore}{\marginpar{ \color{blue} \tiny Problem Score: \BODY \color{black} }}
+
+\newcounter{subproblem}
+% \renewcommand{\thesubproblem}{\alph{subproblem}} % letters 
+\renewcommand{\thesubproblem}{\arabic{subproblem}} % numbers
+\newenvironment{subprob}[1][]{
+  \refstepcounter{subproblem}
+  \begin{trivlist}
+  \item[\hskip \labelsep {\bfseries (\thesubproblem)}]
+}{
+  \end{trivlist}
+}
+\newenvironment{subsol}
+    {\emph{Solution:}
+    }
+    {
+    \qed
+    }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength {\marginparwidth }{2cm}
+
+
+\newtheorem*{remark}{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbff{Z}}
+\newcommand{\st}{\text{s.t}}
+\newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
+\newcommand{\fP}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+
+
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  breaklines=true,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  numbers=left,            
+  numberstyle=\tiny\color{gray}, 
+  numbersep=10pt 
+}
+
+
+% titel en auteur van het document
+\title{Theory of Algorithms Problem Set \#}
+\author{Nicole Tain}
+% \date{} % de datum van het document 
+
+% einde definities; start van de tekst
+\begin{document}
+
+\maketitle                  % maakt een kopje met titel, auteur en datum
+\thispagestyle{empty}       % zet paginanummering uit voor deze pagina
+
+% kopje met bijbehorende titel; varianten: \subsection, \subsubsection
+\section*{Problem 1}
+\begin{figure}[H]
+\centering
+\begin{tabular}{c l c l}
+\toprule
+Step & Proposal & Result & Current matching $(b \to a)$ \\
+\midrule
+1 & a1 makes an offer to b1 & success & $\{1:1\}$ \\
+2 & a2 makes an offer to b1 & failure & $\{1:1\}$ \\
+3 & a3 makes an offer to b4 & success & $\{1:1,\,4:3\}$ \\
+4 & a4 makes an offer to b3 & success & $\{1:1,\,4:3,\,3:4\}$ \\
+5 & a2 makes an offer to b3 & failure & $\{1:1,\,4:3,\,3:4\}$ \\
+6 & a2 makes an offer to b4 & success & $\{1:1,\,4:2,\,3:4\}$ \\
+7 & a3 makes an offer to b2 & success & $\{1:1,\,2:3,\,3:4,\,4:2\}$ \\
+\bottomrule
+\end{tabular}
+\end{figure}
+
+
+
+\section*{Methode}
+
+Leg uit van welke data je gebruik hebt gemaakt, en hoe je die data gemaakt of verzameld hebt. Leg daarna uit hoe je de data geanalyseerd hebt. Wat heb je bijvoorbeeld uitgerekend, en wat heb je met elkaar vergeleken.
+
+\section*{Resultaten }
+
+Geef aan wat de uitkomsten van je onderzoek zijn.
+
+\section*{Discussie}
+
+Bespreek hier wat het antwoord op je onderzoeksvraag is, en of dit iets betekent voor verder onderzoek naar bijvoorbeeld het nut van online adverteren. Je kunt ook iets zeggen over de tekortkomingen van je eigen onderzoek (wat had er beter gekund?) en mogelijkheden tot vervolgonderzoek. 
+
+Je verslag is  \textbf{500 \`a 600 woorden} lang,  de lijst met bronnen niet meegerekend. 
+
+\newpage
+\section*{Bronnen}
+\end{document}

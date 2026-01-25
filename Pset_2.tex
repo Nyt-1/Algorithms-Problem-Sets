@@ -1,0 +1,231 @@
+\documentclass[12pt]{article}
+ \usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ}
+\usepackage{booktabs}
+\usepackage{}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{subcaption}
+\usetikzlibrary{arrows.meta, automata, positioning}
+
+
+\pagestyle{fancy}
+\setlength{\headheight}{65pt}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{sol}
+    {\emph{Solution:}
+    }
+    {
+    \qed
+    }
+\specialcomment{com}{ \color{blue} \textbf{Comment:} }{\color{black}} %for instructor comments while grading
+\NewEnviron{probscore}{\marginpar{ \color{blue} \tiny Problem Score: \BODY \color{black} }}
+
+\newcounter{subproblem}
+% \renewcommand{\thesubproblem}{\alph{subproblem}} % letters 
+\renewcommand{\thesubproblem}{\arabic{subproblem}} % numbers
+\newenvironment{subprob}[1][]{
+  \refstepcounter{subproblem}
+  \begin{trivlist}
+  \item[\hskip \labelsep {\bfseries (\thesubproblem)}]
+}{
+  \end{trivlist}
+}
+\newenvironment{subsol}
+    {\emph{Solution:}
+    }
+    {
+    \qed
+    }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength {\marginparwidth }{2cm}
+
+
+\newtheorem*{remark}{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\st}{\text{ s.t }}
+\newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
+\newcommand{\fP}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+
+
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  breaklines=true,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  numbers=left,            
+  numberstyle=\tiny\color{gray}, 
+  numbersep=10pt 
+}
+
+
+% titel en auteur van het document
+\title{Theory of Algorithms Problem Set \#2}
+\author{Nicole Tain}
+% \date{} % de datum van het document 
+
+% einde definities; start van de tekst
+\begin{document}
+
+\maketitle                  % maakt een kopje met titel, auteur en datum
+\thispagestyle{empty}       % zet paginanummering uit voor deze pagina
+
+% kopje met bijbehorende titel; varianten: \subsection, \subsubsection
+\section*{Problem 1}
+ \begin{center}
+    \begin{tikzpicture}[
+      mycircle/.style={
+         circle,
+         draw=black,
+         fill=white,
+         fill opacity = 0.3,
+         text opacity=1,
+         inner sep=0pt,
+         minimum size=20pt,
+         font=\small},
+      myarrow/.style={-Stealth},
+      node distance=0.6cm and 1.2cm
+      ]
+      \node[mycircle]  at (-3, 0) (s) {$s$};
+      \node[mycircle]  at (-1, 2) (a) {$a$};
+      \node[mycircle]  at (1, 2) (b) {$b$};
+      \node[mycircle]  at (-1, 0) (c) {$c$};
+      \node[mycircle]  at (1, 0) (d) {$d$};
+      \node[mycircle]  at (-1, -2) (e) {$e$};
+      \node[mycircle]  at (1, -2) (f) {$f$};
+      \node[mycircle]  at (3, 0) (t) {$t$};
+
+    \foreach \i/\j/\txt/\p/\pp in {% start node/end node/text/position
+      s.45/a.225/4/above/0.5,
+      s.00/c.180/9/above/0.5,
+      s.315/e.135/14/above/0.5,
+      c.90/a.270/4/right/0.5,
+      c.270/e.90/4/right/0.5,
+      a.00/b.180/4/above/0.5,
+      c.00/d.180/11/above/0.5,
+      e.00/f.180/5/above/0.5,
+      b.225/c.45/1/above/0.5,
+      f.135/c.315/3/above/0.5,
+      b.270/d.90/15/right/0.5,
+      f.90/d.270/4/right/0.5,
+      b.315/t.135/16/above/0.5,
+      d.00/t.180/5/above/0.5,
+      f.45/t.225/6/above/0.5
+      }
+       \draw [myarrow] (\i) -- node[font=\small,\p,pos=\pp] {\txt} (\j);
+
+    \end{tikzpicture}
+    \end{center}
+  
+\begin{figure}[H]
+\centering
+\caption{Dijkstra's Aglorithm}
+\begin{tabular}{c l c}
+\toprule
+Curr Node & Dist & Queue \\
+\midrule
+(start) s & 0 & $\{(l_{s\rightarrow a}, 4), (l_{s\rightarrow c}, 9), (l_{s\rightarrow e}, 14)\}$ \\
+s $\rightarrow$ a & 4 & $\{(l_{a\rightarrow b}, 8), (l_{s\rightarrow c}, 9), (l_{s\rightarrow e}, 14)\}$ \\
+a $\rightarrow$ b & 8 & $\{(l_{s\rightarrow c}, 9), (l_{b\rightarrow c}, 9), (l_{s\rightarrow e}, 14), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+s $\rightarrow$ c & 9 & $\{(l_{b\rightarrow c}, 9), (l_{c\rightarrow a}, 13), (l_{c\rightarrow e}, 13), (l_{s\rightarrow e}, 14), (l_{c\rightarrow d}, 20), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+b $\rightarrow$ c & 9 & $\{(l_{c\rightarrow a}, 13), (l_{c\rightarrow e}, 13), (l_{s\rightarrow e}, 14), (l_{c\rightarrow d}, 20), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+c $\rightarrow$ a & Found & $\{(l_{c\rightarrow e}, 13), (l_{s\rightarrow e}, 14), (l_{c\rightarrow d}, 20), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+c $\rightarrow$ e & 13 & $\{(l_{s\rightarrow e}, 14), (l_{e\rightarrow f}, 18), (l_{c\rightarrow d}, 20), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+s $\rightarrow$ e & Found & $\{(l_{e\rightarrow f}, 18), (l_{c\rightarrow d}, 20), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24)\}$ \\
+e $\rightarrow$ f & 18 & $\{(l_{c\rightarrow d}, 20), (l_{f\rightarrow c}, 21), (l_{f\rightarrow d}, 22), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24), (l_{f\rightarrow t}, 24)\}$ \\
+c $\rightarrow$ d & 20 & $\{(l_{f\rightarrow c}, 21), (l_{f\rightarrow d}, 22), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24), (l_{f\rightarrow t}, 24), (l_{d\rightarrow t}, 25)\}$ \\
+f $\rightarrow$ c & Found & $\{(l_{f\rightarrow d}, 22), (l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24), (l_{f\rightarrow t}, 24), (l_{d\rightarrow t}, 25)\}$ \\
+f $\rightarrow$ d & Found & $\{(l_{b\rightarrow d}, 23), (l_{b\rightarrow t}, 24), (l_{f\rightarrow t}, 24), (l_{d\rightarrow t}, 25)\}$ \\
+b $\rightarrow$ d & Found & $\{(l_{b\rightarrow t}, 24), (l_{f\rightarrow t}, 24), (l_{d\rightarrow t}, 25)\}$ \\
+b $\rightarrow$ t & 24 & $\{(l_{f\rightarrow t}, 24), (l_{d\rightarrow t}, 25)\}$ \\
+f $\rightarrow$ t & 24 & $\{(l_{d\rightarrow t}, 25)\}$ \\
+\end{tabular}
+\end{figure}
+
+The shortest path of distance 24 availble are:
+\begin{itemize}
+  \item[1)] $s \rightarrow c \rightarrow e \rightarrow f \rightarrow t$
+  \item[2)] $s \rightarrow a \rightarrow b \rightarrow c \rightarrow e \rightarrow f \rightarrow t$
+  \item[3)] $s \rightarrow a \rightarrow b \rightarrow t$
+\end{itemize}
+
+
+
+
+\section*{Problem 2}
+\begin{enumerate}
+\item [(a)] Let $G$ be a directed graph where each edge $e \in E(G)$ has a length $l_e \geq 0$. Let $s,t \in V(G)$ be vertices of $G$ and let $P$ be a minimum length path from $s$ to $t$ in $G$. If we increase the length of each edge of $G$ by $2$ then $P$ is still a minimum length path from $s$ to $t$ in $G$.
+  
+  \textbf{False}
+  \begin{proof} Take two paths: $P$ and $P'$, with P representing the shortest path from $s \rightarrow t$. $P$ has a distance value of $n$ and contains $k$ edges. $P'$ is some other path with a distance value of $n'$ and contains $k'$ edges. After lengthening each edge, the total distance value of $P$ is $n + 2k$ and the total distance value of $P'$ is $n' + 2k'$. Since these values are arbitrary, it does not matter even though $n < n', ~\exists k, k' \in \Z, \st n' + 2k' < n + 2k$.
+  \end{proof}
+  
+\item [(b)] Let $G$ be a connected undirected graph where each edge $e \in E(G)$ has a length $l_e \geq 0$ and the lengths of the edges of $G$ are all distinct. Let $T$ be the minimum espanning tree of $G$. If we increase the length of each edge of $G$ by $2$ then $T$ is still the minimum spanning tree of $G$.
+
+  \textbf{True}
+  \begin{proof} We denote the lengthened graph of $G$ as $G'$. They are essentially the same graph with the same vertices and edges. Therefore any spanning graphs in $G$ are spanning graphs in $G'$ and vice versa. We can denote this relationship using a bijective function: 
+    \begin{equation}
+    f: G \rightarrow G'; ~f(G(V, E)) = G'(V, E)
+    \end{equation}
+
+  Note that any spanning tree by definition is connected and acyclic and therefore has exactly $n-1$ edges. Let $T$ be the minimum spanning tree in $G$ with total length $d$. The total length of $f(T) = d + 2(|V|-1)$. 
+
+  By definition of minimum spanning tree, the total length of any other spanning tree, $G'$, is greater than $d$ due to the distinctness of the edge weights and therefore, the legnth of $f(T') > d + 2(|V|-1)$. 
+  
+  $f(T)$ is the minimum spanning tree in $G'$.
+  \end{proof}
+
+
+\item [(c)] Let $G$ be a connected undirected graph where each edge $e \in E(G)$ has a length $l_e \geq 0$ and the lengths of the edges of $G$ are all distinct. Let $T$ be the minimum spanning tree of $G$. If $e = \{u,v\} \in E(G)$ is an edge such that $e$ is the longest edge incident to $u$ and $e$ is the longest edge incident to $v$ then $e \notin T$.
+
+\textbf{False}. If $e$ is the only edge that contains either $u$ or $v$, then it must be part of any spanning tree, including the minimum spanning tree $T$.
+
+\item [(d)] Let $G = (V,E)$ and $G' = (V,E')$ be two connected undirected graphs on the same set of vertices $V$ where each edge $e \in E$ has a length $l_e$, each edge $e \in E'$ has a length $l'_e$, and all of these edge lengths are distinct. Let $G''$ be the graph $G'' = (V,E \cup E')$ where edges $e \in E \setminus E'$ have length $l_e$, edges $e \in E' \setminus E$ have length $l'_e$, and edges $e \in E \cap E'$ have length $\min{\{l_e,l'_e\}}$. Letting $T$, $T'$, and $T''$ be the minimum spanning trees of $G$, $G'$, and $G''$ respectively, $T'' \subseteq T \cup T'$ (i.e., every edge in $T''$ is either in $T$ or $T'$).
+
+\textbf{False}
+\begin{proof}
+  Kruskal's Algorithm for finding minimum subtrees (MST). We claim the MSTs $T, T', T''$ are unqiue due to having distinct edge weights. This is because an MST contains exactly $|V| - 1$ edges and if all edges have different weights, no combonation of $|V| - 1$ edges will amount to the same total weight. Therefore, Kruskal's Algorithm will find the only MST for $G, G', G''$.
+
+  We perform Kruskal's Algorithm on $G, G', G''$. Kruskal's Algorithm takes edges by decending weight and continues or discards them based on if a cycle is formed. In order for an edge, to exist in $T''$ but not in $T' \cup T$, it would need to form a cycle in either $T'$ or $T$ but not in $T''$.
+
+  WLOG, assume that $e_{ab}$ is the first edge which form a cycle in $T$ but not in $T''$. This implies that in $T$, there exists another path, $P$, from $a$ to $b$ which does not exist in $T''$. Let $e_{uv}$ represent some edge in path $P$ which does not exist in $T''$ and $e_{uv}$ would have had to appear earlier in the algorithm. From Kruskal's Algorithm, since $e_{uv}$ is not in $T''$, we know it forms a cycle, which means that there is an alternative path from $u$ to $v$ and therefore, a path from $a$ to $b$. Contradiction.
+
+\end{proof}
+\end{enumerate}
+
+\section*{Problem 3a}
+  Sort all intervals $[a_i, b_i]$ lexographically. We will iterativly create a schedule by testing out intervals and confirming if they are the best one. We start with $P_e = 0$ to represent the furthest time covered and an empty schedule. Take the first interval and mark it as a temporary interval, denote as $[a_t, b_t]$.
+  
+  As we iterate through our list, let $[a_k, b_k]$ represent the next interval:
+  \begin{enumerate}
+    \item If $a_k \leq P_e$ but $b_k \leq b_t$, then we skip that interval. The temporary interval covers equally as much or more empty slots of time. 
+    \item If $a_k \leq P_e$ and $b_k > b_t$, then we replace the temporary interval with $[a_k, b_k]$ becuase $[a_k, b_k]$ covers empty slots of time. 
+    \item If $a_k >P_e$, then there exists a gap and $[a_t, b_t]$ is the best possible and furthest reaching interval s.t. $a_t < P_e$. We append this interval to our schedule. $P_e = b_t$ and $[a_k, b_k]$ is now the new temporary interval.
+  \end{enumerate}
+  
+  This process repeats until we either have $P_e \geq T$ or until we reach the end of the list. The last interval will follow the same pattern, except that if it is better than it's precessor, then rather than becomming a temporary interval, it will automatically be added to the schedule.
+
+\section*{Discussie}
+
+Bespreek hier wat het antwoord op je onderzoeksvraag is, en of dit iets betekent voor verder onderzoek naar bijvoorbeeld het nut van online adverteren. Je kunt ook iets zeggen over de tekortkomingen van je eigen onderzoek (wat had er beter gekund?) en mogelijkheden tot vervolgonderzoek. 
+
+Je verslag is  \textbf{500 \`a 600 woorden} lang,  de lijst met bronnen niet meegerekend. 
+
+\newpage
+\section*{Bronnen}
+\end{document}
