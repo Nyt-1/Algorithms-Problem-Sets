@@ -208,7 +208,7 @@ The shortest path of distance 24 availble are:
 \end{proof}
 \end{enumerate}
 
-\section*{Problem 3a}
+\section*{Problem 3a.}
   Sort all intervals $[a_i, b_i]$ lexographically. We will iterativly create a schedule by testing out intervals and confirming if they are the best one. We start with $P_e = 0$ to represent the furthest time covered and an empty schedule. Take the first interval and mark it as a temporary interval, denote as $[a_t, b_t]$.
   
   As we iterate through our list, let $[a_k, b_k]$ represent the next interval:
@@ -220,12 +220,82 @@ The shortest path of distance 24 availble are:
   
   This process repeats until we either have $P_e \geq T$ or until we reach the end of the list. The last interval will follow the same pattern, except that if it is better than it's precessor, then rather than becomming a temporary interval, it will automatically be added to the schedule.
 
-\section*{Discussie}
+\section*{Problem 3b.}
+We prove the greedy algo stays ahead using the time the $i$-th guard leaves as a measure of progress. We claim that if $S = \{G_1, G_2, \dots, G_m\}$ is the schedule chosen by the greedy algorith. $\forall \text{ valid } S_o = \{G'_1, G'_2, \dots, G'_{m'}\}$, $\forall j \in [m'], \text{ either } m < j \text{ or } b_{i_j} \geq b_{i_j}'$. We prove this by induction.
 
-Bespreek hier wat het antwoord op je onderzoeksvraag is, en of dit iets betekent voor verder onderzoek naar bijvoorbeeld het nut van online adverteren. Je kunt ook iets zeggen over de tekortkomingen van je eigen onderzoek (wat had er beter gekund?) en mogelijkheden tot vervolgonderzoek. 
+\begin{proof} We prove this by induction.
 
-Je verslag is  \textbf{500 \`a 600 woorden} lang,  de lijst met bronnen niet meegerekend. 
+  \textbf{Base Case:} $j = 1$. This is trivially true since the greedy algorithm starts at time 0 and looks for the furthest reaching interval s.t. $a_i \leq 0$
 
+  \textbf{Inductive case:} By inductive hypothesis, $\forall 1 \leq j \leq n, \text{ either } m < j \text{ or } b_{i_j} \geq b_{i_j}'$. Consider $j = n + 1$.
+
+  If $n = m$, then $n + 1 > m$. Proof ends trivially.
+  
+  If $n < m$, then we also know by inductive assumption that $b_{i_n} \geq b_{i_n}'$. Since $S_o$ is a valid schedule, then the next guard in $S_o, ~G_{n+1}' = [a_{i_{n+1}}', b_{i_{n+1}}']$ will have some start time $a_{i_{n+1}}' \leq b_{i_n}' \leq b_{i_n}$ so $G_{n+1}'$ is a valid choice for the next guard in $S$ and $G_{n+1}$ will stay for at least as long as $G_{n+1}'$.
+
+  $\Rightarrow \forall 1 \leq j \leq m', \text{ either } m < j \text{ or } b_{i_j} \geq b_{i_j}'$
+\end{proof}
+
+  Therefore, the greedy solution is as optimal as any solution.
+
+\section*{Problem 3c.} Runtime is $O(nlog(n))$. The original sorting is $O(log(n))$ and afterwards, we loop through the list, once which is $O(n)$
+
+\begin{algorithm}[H]
+\caption{Python Implementation}
+\begin{lstlisting}
+  def schedule(guards: list[list[int]], T: int):
+    if T <= 0:
+      return 0
+    guards.sort()
+    P_e = 0
+    temp = [0, 0]
+    count = 0
+
+    for start, end in guards:
+      if end <= temp[1]:
+        continue
+      
+      if start <= P_e:
+        temp = [start, end]
+        if temp[1] >= T:
+            return count + 1
+        continue
+      else:
+        P_e = temp[1]
+        count += 1
+        if P_e >= T:
+          return count
+        temp = [start, end]
+        
+    if P_e < T and temp[1] > P_e:
+      P_e = temp[1]
+      count += 1
+
+    return count
+\end{lstlisting}
+\end{algorithm}
+
+\section*{Problem 4: Restaurant Rush (Rephrasing of Problem 13 in Chapter 4 of Kleinberg-Tardos) (20 points)}
+You are the owner of a restaurant and there is suddenly a rush of hungry people. Unfortunately, there is currently only one chef in the kitchen so the people are going to have to wait for a while, but you'd like to minimize the total unhappiness.
+
+To model this problem assume that there are $n$ tables. The orders for table $i$ will take time $l_i > 0$ to cook. If their orders come at a time $t_i$, the total unhappiness of table $i$ will be ${u_i}{t_i}$ where $u_i > 0$. Your goal is to minimize the total unhappiness $\sum_{i=1}^{n}{{u_i}{t_i}}$ where 
+\[
+t_i = l_i + \sum_{j: \text{Table } j \text{ is served before table } i}{l_j}.
+\]
+\begin{enumerate}
+\item[(a)] 8 points: Give a greedy algorithm for choosing an order to serve the tables in so that the total unhappiness is minimized.
+\item[(b)] 10 points: Prove that your algorithm is correct.
+\item[(c)] 2 points: Analyze the runtime of your algorithm.
+\end{enumerate}
+\section*{Problem 5: A Pebble Game (20 points)}
+Two players are playing the following pebble game. There is a collection of pebbles of different colors. On each of his/her turns, a player takes all of the pebbles of any one color. Each player aims to maximize the number of pebbles they take.
+\begin{enumerate}
+\item[(a)] 5 points: Assuming that each pebble only has one color, give an optimal greedy strategy. 
+\item[(b)] 10 points: Prove that your answer is correct by showing that if both players follow this strategy, neither player can benefit by deviating from it.
+\item[(c)] 5 points: If pebbles can have more than one color, is this strategy still optimal? Either prove that it is still optimal or give a counterexample. Hint is available.
+\end{enumerate}
 \newpage
-\section*{Bronnen}
+\noindent Hints:\\
+5c. While the strategy in part a is optimal, sometimes less greedy moves may be equally good. Start with a situation where each pebble only has one color but a less greedy move is just as good as the greediest move and then add more colors to make the less greedy move better.
+
 \end{document}
