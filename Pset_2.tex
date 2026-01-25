@@ -238,7 +238,7 @@ We prove the greedy algo stays ahead using the time the $i$-th guard leaves as a
 
   Therefore, the greedy solution is as optimal as any solution.
 
-\section*{Problem 3c.} Runtime is $O(nlog(n))$. The original sorting is $O(log(n))$ and afterwards, we loop through the list, once which is $O(n)$
+\section*{Problem 3c.} Runtime is $O(nlog(n))$. The original sorting is $O(nlog(n))$ and afterwards, we loop through the list, once which is $O(n)$ which doesn't change the asymptotes.
 
 \begin{algorithm}[H]
 \caption{Python Implementation}
@@ -283,32 +283,26 @@ To model this problem assume that there are $n$ tables. The orders for table $i$
 t_i = l_i + \sum_{j: \text{Table } j \text{ is served before table } i}{l_j}.
 \]
 \begin{enumerate}
-\item[(a)] Serve table with the largest $u_i$ first and then go down the line, serving those with larger unhappiness coefficents first.
+\item[(a)] Serve table with the largest $\frac{u_i}{l_i}$ ratio first and then go down the line, serving those with larger unhappiness coefficents first.
 \item[] 
-\item[(b)] We prove by exchange. Let $S = \{i_1, i_2, \dots, i_n\}$ be the optimal solution. We aim to show that if any $u_k < u_{k+1}$ then switching the position of these adjacent orders results in a solution as good as $S$.
+\item[(b)] We prove by exchange. Let $S = \{i_1, i_2, \dots, i_n\}$ be the optimal solution. We aim to show that if $\exists i_k, i_{k+1} \st \frac{u_k}{l_k} < \frac{u_{k+1}}{l_{k+1}}$, then switching the position of these adjacent orders results in a solution as good as $S$.
 
 \begin{equation}
   S' = \{i_1, i_2, \dots, i_{k-1}, i_{k+1}, i_k, \dots, i_n\}
 \end{equation}
 
-The only unhappiness values that change are for tables $k$ and $k+1$. 
+The only unhappiness values that change are for tables $k$ and $k+1$. We model the change as follows:
 \begin{equation}
-  H_k = u_k(l_k + \sum_{j = 1}^{j < k}l_j + l_{k+1}) = u_k(\sum_{j = 1}^{j \leq k + 1}l_j)
+  \Delta H_k = u_k(\sum_{j = 1}^{j \leq k + 1}l_j - \sum_{j = 1}^{j \leq k}l_j) = u_k(l_{k+1})
 \end{equation}
 
 \begin{equation}
-  H_{k+1} = u_{k+1}(l_{k+1} + \sum_{j = 1}^{j < k}l_j)
+  \Delta H_{k+1} = u_{k+1}(l_{k+1} + \sum_{j = 1}^{j < k}l_j - \sum_{j = 1}^{j \leq k+1}l_j) = - u_{k+1}(l_k)
 \end{equation}
 
-Therefore the total unhappiness changes by comparing unhappiness of tables $k$ and $k+1$ in the new order subtracted by unhappiness in old order:
+Therefore the total unhappiness changes by $u_k(l_{k+1}) - u_{k+1}(l_k)$. From the greedy algorithm proposed, we know that $\frac{u_k}{l_k} < \frac{u_{k+1}}{l_{k+1}}$ and so $\Delta H$ is negative. Meaning that the total unhappiness decreases if we switch the position of these tables. The greedy solution is at least as good as the optimal solution $S$.
 
-\begin{align*}
-  [u_k(\sum_{j = 1}^{j \leq k + 1}l_j) + u_{k+1}(l_{k+1} + \sum_{j = 1}^{j < k}l_j)] - [u_{k+1}(\sum_{j = 1}^{j \leq k+1}l_j) + u_k(\sum_{j = 1}^{j \leq k}l_j)] \\
-  [u_k(\sum_{j = 1}^{j \leq k + 1}l_j) - u_k(\sum_{j = 1}^{j \leq k}l_j)] + [u_{k+1}(l_{k+1} + \sum_{j = 1}^{j < k}l_j) - u_{k+1}(\sum_{j = 1}^{j \leq k+1}l_j)]\\
-  u_k(l_{k+1}) - u_{k+1}(l_k)
-\end{align*}
-
-\item[(c)]Runtime is $O(log(n))$. The original sort by $u_i$ is $O(log(n))$ and we get the optimal order.
+\item[(c)]Runtime is $O(nlog(n))$. Calculating the ratio is $O(n)$. Sorting by $\frac{u_i}{l_i}$ is $O(nlog(n))$. $O(nlog(n))$ dominates.
 \end{enumerate}
 
 
