@@ -76,7 +76,7 @@
 
 % titel en auteur van het document
 \title{Theory of Algorithms Problem Set \#2}
-\author{Nicole Tain}
+\author{Nicole Tian}
 % \date{} % de datum van het document 
 
 % einde definities; start van de tekst
@@ -278,7 +278,7 @@ The shortest path of distance 24 availble are:
 
 \section*{Problem 4}
 \begin{enumerate}
-\item[(a)] Serve table with the largest $\frac{u_i}{l_i}$ ratio first and then go down the line, serving those with larger unhappiness coefficents first.
+\item[(a)] Serve table with the largest $\frac{u_i}{l_i}$ ratio first and then go down the line, serving those with larger unhappiness ratios first.
 \item[] 
 \item[(b)] We prove by exchange. Let $S = \{i_1, i_2, \dots, i_n\}$ be the optimal solution. We aim to show that if $\exists i_k, i_{k+1} \st \frac{u_k}{l_k} < \frac{u_{k+1}}{l_{k+1}}$, then switching the position of these adjacent orders results in a solution as good as $S$.
 
@@ -295,7 +295,7 @@ The only unhappiness values that change are for tables $k$ and $k+1$. We model t
   \Delta H_{k+1} = u_{k+1}(l_{k+1} + \sum_{j = 1}^{j < k}l_j - \sum_{j = 1}^{j \leq k+1}l_j) = - u_{k+1}(l_k)
 \end{equation}
 
-Therefore the total unhappiness changes by $u_k(l_{k+1}) - u_{k+1}(l_k)$. From the greedy algorithm proposed, we know that $\frac{u_k}{l_k} < \frac{u_{k+1}}{l_{k+1}}$ and so $\Delta H$ is negative. Meaning that the total unhappiness decreases if we switch the position of these tables. The greedy solution is at least as good as the optimal solution $S$.
+Therefore the total unhappiness changes by $u_k(l_{k+1}) - u_{k+1}(l_k)$. From the greedy algorithm proposed, we know that $\frac{u_k}{l_k} < \frac{u_{k+1}}{l_{k+1}}$ and so $\Delta H$ is negative. Meaning that the total unhappiness decreases if we switch the position of these tables. The greedy solution is better than the optimal solution $S$ and is therefore the true optimal solution.
 
 \item[(c)]Runtime is $O(nlog(n))$. Calculating the ratio is $O(n)$. Sorting by $\frac{u_i}{l_i}$ is $O(nlog(n))$. $O(nlog(n))$ dominates.
 \end{enumerate}
@@ -306,44 +306,44 @@ Two players are playing the following pebble game. There is a collection of pebb
 \begin{enumerate}
 \item[(a)] At each turn, the player takes the color with the most amount of pebbles.
 
-\item[(b)] Let $R$ denote the set of remaining pebbles at some point in the game, and let $M=\max R$ be the largest remaining pile size.
-
-We claim that on any turn, taking a pile of size $M$ is the dominant move
+\item[(b)] We claim that if one player plays the greedy strategy, there is no benefit in the other player deviating. 
 
 \begin{proof}
-Let round $i$ be the first round in which a player deviates from the greedy solution and chooses $x\in R \st x\le M$. 
+  WLOG, let $k$ be the last time a player (arbitrary) deviates from the greedy solution. The number of pebbles either players gained in the previous $k-1$ rounds is constant. 
 
-In order for this new solution to be as good as the greedy, we will have to take a pile 
+  Let $M_k, M_{k+1}, M_{k+2}, \dots, M_n$ represent the order of the greatest number of pebbles of any one color starting from round $k$. We note that if both players follow the greedy strategy, the order of colors picked would be:
+  \begin{equation}
+    \{M_k, M_{k+1}, M_{k+2}, \dots, M_{n}\}
+  \end{equation}
 
-\begin{itemize}
-  \item \textbf{Scenario 1:} The player takes $M$ now. If the player would later take the pile of size $x$ as well,
-  then they end up with both $M$ and $x$. Otherwise, the opponent eventually takes $x$.
-  \item \textbf{Scenario 2:} The player takes $x$ now. Consider what happens to the pile of size $M$ in Scenario 1.
-  \begin{itemize}
-    \item If in Scenario 1 the player eventually takes $M$ (so the player gets both $M$ and $x$ across the game),
-    then the player also ends with both piles in Scenario 2, just in the opposite order. Thus the player's final total
-    is the same in both scenarios.
-    \item If in Scenario 1 the opponent would take $x$ (so the player gets $M$ but not $x$), then in Scenario 2 the
-    opponent can take $M$ instead, meaning the player has effectively replaced $M$ with $x$. In this case the player's
-    final total decreases by $M-x \ge 0$ (strictly if $M>x$).
-  \end{itemize}
-\end{itemize}
+  If at round $k$, the player picks some $M_j$ instead of $M_k$, then after round $j$, the order in which colors are chosen reflect the greedy strategy so we only need to consider rounds $k$ through $j$:
+  \begin{equation}
+    \{M_k, M_{k+1}, M_{k+2}, \dots, M_{j}\}
+  \end{equation}
+  
+  The following reflects the order of colors if the player picks $M_j$:
+  \begin{equation}
+    \{M_j, M_k, M_{k+1}, \dots, M_{j-1}\}
+  \end{equation}
+  
+  In both scenarios, the player will take the odd indices: $1, 3, 5, \dots$
+  
+  Assume $j$ is odd:
+  \begin{align}
+    \Delta P &= (M_k + M_{k+2} + M_{k+4}, \dots, M_{j-1}) - (M_j + M_{k+1} + M_{k+3}, \dots, M_{j-2}) \\
+    \Delta P &= (M_k + M_{k+2} + M_{k+4}, \dots, M_{j-1}) - (M_{k+1} + M_{k+3}, \dots, M_{j-2} + M_j)
+  \end{align}
+  $\Delta P \geq 0$. We can match each $M_i$ with $- M_{i+1}$ which is by definition smaller. 
 
-In all cases, taking $M$ now gives the current player at least as many pebbles as taking $x$ now. Therefore taking a
-largest remaining pile is a best response to any continuation of play, i.e., a dominant move.
+  Assume $j$ is even:
+   \begin{align}
+    \Delta P &= (M_k + M_{k+2} + M_{k+4}, \dots, M_{j}) - (M_j + M_{k+1} + M_{k+3}, \dots, M_{j-1}) \\
+    \Delta P &= (M_k + M_{k+2} + M_{k+4}, \dots, M_{j}) - (M_{k+1} + M_{k+3}, \dots, M_{j-1} + M_j)
+  \end{align}
+  $\Delta P \geq 0$. We can match each $M_i$ with $- M_{i+1}$ which is by definition smaller.
+
+  Therefore, the change in pebbles by taking the maximum is as good as or better than any other strategy. We can extend this argument to previous rounds where either player deviates. 
 \end{proof}
-
-Since this argument applies at every turn, if both players follow the greedy strategy (always take a largest remaining
-pile), then neither player can increase their final total by deviating on any turn. Hence the greedy strategy is optimal.
-
-
-% The greedy strategy states that at any turn, you take the color with the great number of pebbles. We denote one round as two turns with both players taking one color. The final number of pebbles a player has after $n$ rounds can be represented as $S = \sum_{i = 1}^{n} p_i$.
-
-% If both players play the greedy algorithm, at every round, player 1 will take at least as many pebbles as player 2 ($p_1 - p_2 \geq 0)$. The total difference is the sum of the round difference which will be non-negative $(P_1 - P_2)$.
-
-% At every round player 1 deviates, player 2 will take the color with the most pebbles ($p_1 - p_2 \leq 0)$. This is evidently a worse outcome for player 1, showing that the greedy strategy is optimal. 
-
-% At every round player 2 deviates, player 1 will still take the color with the most pebbles but the net difference between the two will be greater than previously, leading to an even larger total difference. Therefore, deviating is a worse strategy for player 2.
 
 \item[(c)] Let there be 22 pebbles total with the following distributions: 
   \begin{enumerate}
