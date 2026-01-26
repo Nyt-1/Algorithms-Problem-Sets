@@ -1,0 +1,145 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,amsthm,amssymb,amscd,epsfig,url}
+\usepackage{fullpage}
+\usepackage{times}
+\usepackage{mathdots}
+\usepackage{xcolor}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\def\ZZ{{\mathbb Z}}
+\def\QQ{{\mathbb Q}}
+\def\RR{{\mathbb R}}
+\def\TT{{\mathcal{C} T}}
+\def\KK{{\mathcal{C} K}}
+\newcommand{\hus}{\hfill\break}
+\newcommand{\bull}{\textbullet\;\;}
+\def\iso{{\operatorname{\ \approx \ }}}   % isomorphism
+\def\im{{\operatorname{im}}}              % image
+\def\Hom{{\operatorname{Hom}}}           % homomorphisms
+\def\line{{\operatorname{line} \,}}       % line graph
+\def\sd{{\operatorname{sd \,}}}           % first edge subdivision graph
+\def\coker{{\operatorname{coker}}}        % cokernel
+\def\lcm{{\operatorname{lcm}}}             % least common multiple
+\newcommand{\gcdd}{\gamma}              
+\def\del{{\partial}}                      % signed incidence matrix
+\def\<{{\langle}} \def\>{{\rangle}}       % Inner product
+\def\ZC{{Z^\#}}                           % cycle space
+\setlength{\textheight}{9in}               
+%\setlength{\textwidth}{6in}               % width of text
+%\setlength{\oddsidemargin}{0in}           % odd page left margin
+%\setlength{\evensidemargin}{0in}          % even page left margin 
+
+\title{Problem Set 1}
+\author{CMSC 27230: Theory of Algorithms}
+\date{Assigned January 6, 2026, Due January 20, 2026}
+
+\begin{document}
+\maketitle
+
+\thispagestyle{empty}
+\section*{Problem 0: Collaborators and Outside Sources}
+Who were your collaborators (if any)? Which outside sources (if any) did you use?
+\section*{Problem 1: Gale-Shapley and Stable Matchings (15 points)}
+\begin{enumerate}
+\item[(a)] 5 points: Given the following preference lists, run the Gale-Shapley algorithm with group $A$ making the offers to obtain a stable matching.
+
+Group $A$'s preference lists (from most preferred to least preferred):
+\begin{enumerate}
+\item[$a_1$:] $b_1$, $b_3$, $b_2$, $b_4$
+\item[$a_2$:] $b_1$, $b_3$, $b_4$, $b_2$
+\item[$a_3$:] $b_4$, $b_2$, $b_1$, $b_3$
+\item[$a_4$:] $b_3$, $b_1$, $b_4$, $b_2$
+\end{enumerate}
+Group $B$'s preference lists (from most preferred to least preferred):
+\begin{enumerate}
+\item[$b_1$:] $a_3$, $a_4$, $a_1$, $a_2$
+\item[$b_2$:] $a_1$, $a_4$, $a_2$, $a_3$
+\item[$b_3$:] $a_3$, $a_1$, $a_4$, $a_2$
+\item[$b_4$:] $a_4$, $a_2$, $a_1$, $a_3$
+\end{enumerate}
+For your answer (and for your answer to part b as well), you should give the following data. At each step, give the offer that is made, whether or not this offer is accepted, and the resulting partial matching.
+
+For this part (and for part b), you may write a computer program to implement the Gale-Shapley algorithm and generate the needed data. If you do so, you should submit your code along with the data.
+\item[(b)] 5 points: Now run the Gale-Shapley algorithm with group $B$ making the offers to obtain another stable matching. Which people are happier in this new stable matching (compared to the stable matching found in part a)?
+\item[(c)] 5 points: Which other stable matching(s) are there, if any? Show that you have found all of the stable matchings. Hint is available.
+\end{enumerate}
+Note: For problem 1, parts a and b are implementation questions while part c is a subtle problem. For full credit on part c, you should confirm that the additional stable matching(s) you found are indeed stable and prove that there are no other stable matchings besides the ones you found.
+\section*{Problem 2: Big O Notation (10 points)}
+\begin{enumerate}
+\item[(a)] 5 points: Given each of the following statements, what can we say about $T(n)$ using Big $O$ notation? For your answers, you should use the concepts of $O(\cdot)$, $\Omega(\cdot)$, and/or $\Theta(\cdot)$ to capture the upper and/or lower bounds on $T(n)$. All logarithms are base 2. % (if applicable). 
+\begin{enumerate}
+\item[1.] $T(n) \leq n^2 + 2n^3 + 10$.
+\item[2.] $T(n) = nlog(n) + 50n$.
+\item[3.] $T(n) \geq 3log(n)^{10} + 20\sqrt{n}$.
+\item[4.] $n{2^n} \leq T(n) \leq {n^2}{2^{n+2}}$.
+\item[5.] $T(n) = (1 + (-1)^n)n^2 + 4n$
+\end{enumerate}
+Note: For each of these statements, you will receive one point for a correct answer, half of a point for a partially correct answer, and zero points for an answer which is missing or almost entirely wrong.
+\item[(b)] 5 points: Order the functions below in order of increasing asymptotic growth. If two functions $f(n)$ and $g(n)$ have the same asymptotic growth (i.e., $g(n)$ is $\Theta(f(n))$), you should indicate this by writing $f(n) \sim g(n)$. All logarithms are base 2.\\
+$3^n, log(n), (log(n))^{log(n)}, 8\sqrt{n}, {n^2}2^n, 2^{(log(n))^2}, n^2, 2^{log(n)}, 2^{\sqrt{log(n)}}, 2nlog(n), 5n$\\
+Hint is available.
+ 
+Note: For this problem, your score will be $5-\frac{(\# \text{ of corrections needed})}{2}$.
+\end{enumerate}
+\section*{Problem 3: Statements About Stable Matchings (30 points)}
+For each of the following statements about stable matchings, state whether the statement is true or false. If the statement is true, explain why it is true. If the statement is false, give a counterexample.
+\begin{enumerate}
+\item [(a)] For the stable matching problem, if all of the people in group $A$ have the same preference list $b_1,\ldots,b_n$ then there is a unique stable matching.
+\item [(b)] For the stable matching problem, for each $i \in [n]$, let $S_i \subseteq B$ be the set 
+\[
+S_i = \{b_j \in B: \text{There is a stable matching } M \text{ which matches } a_i \text{ and } b_j\}
+\]
+of possible partners for $a_i$ in a stable matching.
+
+For all $n \in \mathbb{N}$, there exist preference lists such that for all $i \in [n]$, $S_i = B$. Hint is available.
+\item [(c)] For the stable matching problem, if we run the Gale-Shapley algorithm with group $A$ making the offers then at least one person in group $A$ will be matched with their first or second choice.
+\end{enumerate}
+\section*{Problem 4: Laissez-Faire Matching (20 points, 10 extra credit points available)}
+\begin{enumerate}
+\item[(a)] 10 points: Let's say that we try and find a stable matching in the following way. We start with an arbitrary matching $M$. As long as there is a pair $(a_i,b_j)$ of people who would rather be with each other than their current partners, we choose one such pair, match $a_i$ with $b_j$, and match the previous partners of $a_i$ and $b_j$ with each other. Give an example where this process does not terminate.
+\item[(b)] 10 points: Now consider the case where there is a happiness function $h: [n] \times [n] \to \mathbb{R}$ where $h(i,j)$ gives the happiness of $a_i$ and $b_j$ if they are paired together. Here $a_i$ prefers $b_j$ to $b_{j'}$ if $h(i,j) > h(i,j')$ and $b_j$ prefers $a_i$ to $a_{i'}$ if $h(i,j) > h(i',j)$, so we assume that all of the values $\{h(i,j):i,j \in [n]\}$ are distinct. Show that in this case, the process of Laissez-Faire matching must eventually terminate and give an upper bound on how long it will take for this process to terminate. Hint is available.
+\item[(c)] Up to 10 points extra credit: How long can the process in part b take? Give a lower bound and show that it is correct by giving a happiness function and a sequence of steps which takes this amount of time. \\
+\\
+Note: For this part, the amount of extra credit you earn will be based on the strength of your lower bound. Any bound which is stronger than $\Omega(n^2)$ will earn extra credit.
+\end{enumerate}
+\section*{Problem 5: King of the Hill (25 points, 5 extra credit points available)}
+$n$ people are playing the following variant of king of the hill:
+\begin{enumerate}
+\item Everyone starts at height $h = 1$.
+\item Each round, the referee selects three people who are at the same height $h > 0$ (if possible) and has them compete to see who will go up and who will go down. The winner of the competition goes up to height $h+1$ while the two losers go down to height $h-1$. Anyone who goes down to height $0$ is eliminated.
+\item If there are at most two people at every height $h > 0$ then the game ends and the person or people at the highest height win.
+\end{enumerate}
+\begin{enumerate}
+\item[(a)] 5 points: Prove that the game will eventually terminate and give an upper bound on the number of competitions required before the game ends. Hint is available.
+\item[(b)] 10 points: How high up will the top person or people be? Express your answer using big $O$ notation and justify your answer. Hint is available.
+
+Note: You do not need to give a rigorous proof for this part but you should have both a lower bound argument and an upper bound argument.
+\item[(c)] 10 points: Prove that the number of competitions that occur at each height and the final number of people at each height is the same regardless of which order the competitions are held in.
+\item[(d)] Bonus question (5 points extra credit): After the game ends, how many people will be at each height? Explain why your answer is correct.
+
+Note: For your answer, you should describe how to find the number of people at height $h$ for a given $n$ in $O(logn)$ time.
+\end{enumerate}
+Note: For this problem, part a is a straightforward problem while parts b and c are subtle problems.
+\newpage
+\noindent Hints:\\
+1c. Use parts a and b and the properties of the Gale-Shapley algorithm to determine the set of possible partners for each person in a stable matching and then work from there.\\
+\\
+2b. Taking the logarithm of these functions may be helpful for comparing them.\\
+\\
+3b. It may be helpful to think about the following observation. If $M$ and $M'$ are stable matchings such that $(a_i,b_j) \in M$, $(a_i,b_{j'}) \in M'$, and $a_i$ prefers $b_j$ to $b_{j'}$ then $b_j$ must be happier in $M'$ than $M$ as otherwise $M$ would not be stable. Thus, for stable matchings, in order for someone to become less happy, his/her partner must become happier.\\
+\\
+4b. Find a potential function based on the happiness of the couples which is guaranteed to increase after every step. Alternatively, considering a lexicographic ordering may be helpful.\\
+\\
+5a. Can you find a simple potential function which is always non-negative and decreases by $1$ after each competition?\\
+\\
+5b. What invariants does this game have? For this, it will be helpful to consider the following question. What are the functions $f(n)$ such that $3f(n) = f(n+1) + 2f(n-1)$?
+
+\end{document}

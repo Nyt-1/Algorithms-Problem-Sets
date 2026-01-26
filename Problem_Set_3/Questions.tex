@@ -1,0 +1,108 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,amsthm,amssymb,amscd,epsfig,url}
+\usepackage{fullpage}
+\usepackage{times}
+\usepackage{mathdots}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, automata, positioning}
+
+\def\ZZ{{\mathbb Z}}
+\def\QQ{{\mathbb Q}}
+\def\RR{{\mathbb R}}
+\def\TT{{\mathcal{C} T}}
+\def\KK{{\mathcal{C} K}}
+\newcommand{\hus}{\hfill\break}
+\newcommand{\bull}{\textbullet\;\;}
+\def\iso{{\operatorname{\ \approx \ }}}   % isomorphism
+\def\im{{\operatorname{im}}}              % image
+\def\Hom{{\operatorname{Hom}}}           % homomorphisms
+\def\line{{\operatorname{line} \,}}       % line graph
+\def\sd{{\operatorname{sd \,}}}           % first edge subdivision graph
+\def\coker{{\operatorname{coker}}}        % cokernel
+\def\lcm{{\operatorname{lcm}}}             % least common multiple
+\newcommand{\gcdd}{\gamma}              
+\def\del{{\partial}}                      % signed incidence matrix
+\def\<{{\langle}} \def\>{{\rangle}}       % Inner product
+\def\ZC{{Z^\#}}                           % cycle space
+\setlength{\textheight}{9in}               
+%\setlength{\textwidth}{6in}               % width of text
+%\setlength{\oddsidemargin}{0in}           % odd page left margin
+%\setlength{\evensidemargin}{0in}          % even page left margin 
+
+\title{Problem Set 3}
+\author{CMSC 27230: Honors Theory of Algorithms}
+\date{Assigned January 18, 2026, Due February 2, 2026}
+
+\begin{document}
+\maketitle
+
+\thispagestyle{empty}
+\section*{Problem 0: Collaborators and Outside Sources}
+Who were your collaborators (if any)? Which outside sources (if any) did you use?
+\section*{Problem 1: Recurrence Relations (30 points, 5 extra credit points available)}
+Solve each of the following recurrence relations with the given initial value(s). Show your work.
+\begin{enumerate}
+\item[(a)] 10 points: $T(n) = 2T(\frac{n}{4}) + 2n$, $T(1) = 3$.
+\item[(b)] 10 points: $T(n) = 4T(\frac{n}{3}) + 5n^2$, $T(1) = 1$.
+\item[(c)] 10 points: $T(n) = T(\frac{n}{2}) + 2n - 1$, $T(1) = 1$.
+\item[(d)] 5 points extra credit: $T(n) = 12T(\frac{n}{2}) - 32T(\frac{n}{4}) + n^2 + 3n$, $T(1) = 1$, $T(2) = 2$.
+\end{enumerate}
+\section*{Problem 2: The Greedy Algorithm Fell Behind (20 points)}
+Consider the following situation. There is a problem you are trying to design an algorithm for. For this problem, you have a way to evaluate the performance of any algorithm at each time $t$. In particular, for any algorithm $A$, you have a function $v_A: \mathbb{N} \cup \{0\} \to \mathbb{R}$ which gives the performance $v_A(t)$ of the algorithm at time $t$ (where we always set $v_A(0) = 0$ as there is no progress at time $0$). 
+
+You have designed a greedy algorithm $A$ and you think you have an argument for why it should always stay ahead. However, your partner comes up with another algorithm $B$ and you find that at the end, algorithm $B$ did better than algorithm $A$, i.e., $v_{B}(t_{end}) > v_{A}(t_{end})$. 
+
+You would like to figure out where your reasoning failed. To do this, you would like to find a time $t \in \{0,1,\ldots,t_{end}-1\}$ such that $v_{A}(t) \geq v_{B}(t)$ but $v_{A}(t+1) < v_{B}(t+1)$, i.e., your greedy algorithm was ahead (or at least equal) at time $t$ but fell behind at time $t+1$.
+
+For example, if $t_{end} = 8$ and the performances of the algorithms were as follows
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+ \hline
+ Time $t$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$\\
+ \hline
+ $v_A(t)$ & $0$ & $7$ & $9$ & $10$ & $14$ & $18$ & $24$ & $28$ & $30$\\
+ \hline
+ $v_B(t)$ & $0$ & $4$ & $7$ & $8$ & $16$ & $17$ & $22$ & $30$ & $32$\\
+ \hline
+\end{tabular}
+\end{center}
+then either $t = 3$ or $t = 6$ would be a correct answer.
+\begin{enumerate}
+\item[(a)] 10 points: Give a fast algorithm for finding such a time $t$.
+\item[(b)] 5 points: Explain why your algorithm is correct. 
+\item[(c)] 5 points: What is the runtime of your algorithm? Explain why your algorithm has this runtime.
+\end{enumerate}
+\section*{Problem 3: Target Sum (25 points)}
+You have $n$ integers $x_1,\ldots,x_n$ and you want to either find four of these integers which sum to a target integer $S$ or show that this is impossible. In other words, you either want to find four indices $i < j < k < l \in [n]$ such that $x_i + x_j + x_k + x_l = S$ or show that no such indices exist.
+\begin{enumerate}
+\item[(a)] 10 points: Give an $O(n^2log(n))$ time algorithm to solve this problem. Hint is available.
+\item[(b)] 10 points: Explain why your algorithm is correct.
+\item[(c)] 5 points: Explain why your algorithm takes $O(n^2log(n))$ time.
+\end{enumerate}
+Note: Unlike most divide and conquer algorithms, the algorithm for this problem will not be recursive.
+\section*{Problem 4: Rephrasing of Problem 5 in Chapter 5 of Kleinberg-Tardos (25 points)}
+Let's say that we are given $n$ lines $\{y = {a_i}x + b_i: i \in [n]\}$ and we want to find all of the lines which can be seen from above without passing through another line. In other words, we want to find all $i \in [n]$ such that $\exists x \in \mathbb{R} \left(\forall j \in [n] \setminus \{i\} ({a_i}x + b_i \geq {a_j}x + b_j)\right)$.\\
+\\
+\begin{enumerate}
+\item[(a)] 10 points: Give a fast algorithm to solve this problem. Hint is available.
+\item[(b)] 10 points: Explain why your algorithm is correct.
+\item[(c)] 5 points: What is the runtime of your algorithm? Explain why your algorithm has this runtime.
+\end{enumerate}
+\newpage
+\section*{Hints}
+3a. You should consider sums of pairs of the integers and how they can be combined. When trying to combine these sums, be careful that you do not use the same integer twice.\\
+\\
+4a. You can divide up the lines based on their slope. If you solve the problem for the subset of lines with smaller slopes and the subset of lines with larger slopes, can you combine your solutions to obtain a solution for the entire problem?
+
+\end{document}

@@ -1,0 +1,415 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}  % gebruik de juiste 'character encoding'
+\usepackage[english]{babel}    % definitie van de taal (Engels is de standaard)
+\usepackage{hyperref}        % geef URLs netjes weer
+\usepackage{booktabs}		 % mooiere tabellen
+\usepackage{a4wide}          % papierformaat en marges
+\pagestyle{empty}            % zet paginanummering uit
+\usepackage{algorithm}
+\usepackage{float}      % for [H] to force placement
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{parskip}
+\usepackage{amssymb}
+
+
+
+% titel en auteur van het document
+\title{Algorithms PSET 1}
+\author{Nicole Tian}
+
+\begin{document}
+
+\maketitle                  % maakt een kopje met titel, auteur en datum
+
+\section*{Problem 0: Collaborators and Outside Sources}
+Michael Lee, Anthony Yoon
+
+
+\section*{Problem 1}
+\begin{algorithm}[H]
+\caption{Gale--Shapley (A-proposing) -- Python implementation}
+\begin{lstlisting}
+pref_a = {"a1":["b1", "b3", "b2", "b4"],
+           "a2":["b1", "b3", "b4", "b2"],
+           "a3":["b4", "b2", "b1", "b3"],
+           "a4":["b3", "b1", "b4", "b2"],}
+
+pref_b = {"b1":["a3", "a4", "a1", "a2"],
+           "b2":["a1", "a4", "a2", "a3"],
+           "b3":["a3", "a1", "a4", "a2"],
+           "b4":["a4", "a2", "a1", "a3"],}
+
+round = 0
+
+free_a = list(pref_a.keys())
+matches = {}
+
+while (free_a):
+    curr_a = free_a.pop(0)
+    proposed = pref_a[curr_a].pop(0)
+
+    if proposed not in matches:
+        matches[proposed] = curr_a
+        state = "accepted"
+        new_pair = f"{curr_a} ------ {proposed}"
+
+    elif pref_b[proposed].index(matches[proposed]) > pref_b[proposed].index(curr_a):
+        free_a.append(matches[proposed])
+        matches[proposed] = curr_a
+        state = "accepted"
+        new_pair = f"{curr_a} ------ {proposed}"
+
+    else:
+        free_a.append(curr_a)
+        state = "rejected"
+        new_pair = "nothing"
+    
+    round += 1
+    print(f"Round {round}: Offer from {curr_a} to {proposed} was {state} resulting in   {new_pair}\n")
+
+print("\nFinal pairings: ")
+for match in matches:
+    print(f"{matches[match]} ------ {match}")
+\end{lstlisting}
+\end{algorithm}
+
+\begin{itemize}
+    \item[a)] Results of A-Proposing:
+    \begin{verbatim}
+    Round 1: Offer from a1 to b1 was accepted resulting in   a1 ------ b1
+    
+    Round 2: Offer from a2 to b1 was rejected resulting in   nothing
+    
+    Round 3: Offer from a3 to b4 was accepted resulting in   a3 ------ b4
+    
+    Round 4: Offer from a4 to b3 was accepted resulting in   a4 ------ b3
+    
+    Round 5: Offer from a2 to b3 was rejected resulting in   nothing
+    
+    Round 6: Offer from a2 to b4 was accepted resulting in   a2 ------ b4
+    
+    Round 7: Offer from a3 to b2 was accepted resulting in   a3 ------ b2
+    
+    Final pairings: 
+    a1 ------ b1
+    a2 ------ b4
+    a4 ------ b3
+    a3 ------ b2
+    \end{verbatim}
+
+    \item[b)] Results of B-Proposing:
+    \begin{verbatim}
+    Round 1: Offer from b1 to a3 was accepted resulting in   b1 ------ a3
+
+    Round 2: Offer from b2 to a1 was accepted resulting in   b2 ------ a1
+    
+    Round 3: Offer from b3 to a3 was rejected resulting in   nothing
+    
+    Round 4: Offer from b4 to a4 was accepted resulting in   b4 ------ a4
+    
+    Round 5: Offer from b3 to a1 was accepted resulting in   b3 ------ a1
+    
+    Round 6: Offer from b2 to a4 was rejected resulting in   nothing
+    
+    Round 7: Offer from b2 to a2 was accepted resulting in   b2 ------ a2
+    
+    
+    Final pairings: 
+    b1 ------ a3
+    b3 ------ a1
+    b4 ------ a4
+    b2 ------ a2
+    \end{verbatim}
+
+   \item[c)] Part(a) gives best stable matching for group A and the worst for group B meaning that all members of group A are with their most preferred partner and all members of group B are with their least preferred partner (out of the possibilities that end in a stable match).
+
+We take a look at $b_1$ who's best partner is $a_3$ and worst is $a_1$. This means that across all stable matching, $b_1$ can only possibly be paired with $a_3$, $a_4$, or $a_1$. If $b_1$ is paired with $a_3$, we force the stable matching in part(b). $b_2$ is forced to be with $a_2$ since the only other option, $a_3$, is taken. $b_3$ is forced to be with $a_1$ since the only other option, $a_4$, is taken. $b_4$ is then finally forced to be with $a_4$. Similarly, if we pair $b_1$ with $a_1$, we force the stable matching found in part(a).
+
+Finally, if we pair $b_1$ with $a_4$, we force $b_3$ to be with $a_1$, $b_2$ to be with $a_3$, and $b_4$ to be with $a_2$. This is a stable matching. $a_1$ is with its second choice; however, its first choice prefers their current partner over $a_1$. $a_2$ is with its third choice; however, both its first and second choices prefer their current partners over $a_2$. $a_3$ is with its second choice; however, its first choice prefers their current partner over $a_3$. $a_4$ is with its second choice; however, its first choice prefers their current partner over $a_4$.
+\end{itemize}
+
+
+
+\section*{Problem 2}
+
+\begin{itemize}
+\item[a)]
+    \begin{itemize}
+    \item[]  $O(n^3)$
+    \item[] $\theta(n\cdot log_(n))$
+    \item[] $\Omega(\sqrt{n})$
+    \item[] $O(n^2 \cdot 2^n), ~\Omega(n\cdot2^n)$
+    \item[] $O(n^2), ~\Omega(n)$
+    \end{itemize}
+\item[b)]
+\[log(n) < 2^{\sqrt{log(n}} < 8\sqrt{n} < 5n \sim 2^{log(n)} < 2nlog(n) < n^2 < log(n)^{log(n)} < 2^{log(n)^2} < n^22^n < 3^n\]
+\end{itemize}
+
+\section*{Problem 3}
+\begin{itemize}
+    \item[a)] True. We prove by induction on $b_n$ for all $n \geq 1$. $\forall n$, the pairing found by Gale-Shapely is the only pairing possible across all stable matchings.
+
+     \textbf{Base Case:} n=1. Since all $a_n$ prefer $b_1$, under Gale-Shapley, they will all propose to $b_1$ at one point and so $b_1$ will end up with their first choice, dictated as $a_{k_1}$. There exists no other pairing for $b_1$ since any deviation from $a_{k_1}$ will cause ($a_{k_1}$, $b_1$) to be a blocking pair as they prefer each other over everyone else. 
+
+    \textbf{  Inductive Case:} Assume that for all $1\leq n \leq m$, they cannot deviate from the pairing found by Gale-Shapley. Now consider $n = m+1$. $b_{m+1}$ is paired with $a_{k_{m+1}}$. Among all available $a_n$, $b_{m+1}$ prefers $a_{k_{m+1}}$, meaning that all $a_n$ that $b_{m+1}$ prefer over it's current partner are already matched with $b_n$ s.t. $n \leq m$ and by inductive hypothesis, those $a_n$ are unable to form any other pairings across any stable match. $b_{m+1}$ is unable to form a stable match with any lesser preferred $a_n$ because Gale-Shapely (A-proposing) finds the worst stable match for any $b_n$ in B. 
+
+    \quad Therefore, for all $n \geq 1$. $\forall n$, the pairing found by Gale-Shapely is the only pairing possible across all stable matchings. $\exists!$ stable matching if all of the people in group A have the same preference list.
+
+
+    \item[b)] True. $\forall i \leq n$, we dictate the following preference lists:
+    \begin{align*}
+        a_i&: b_i, b_{i+1},\dots, b_{i+n-1} \pmod{n} \\
+        b_i &: a_{i+1},\dots, a_{i+n} \pmod{n}.
+    \end{align*}
+    
+    Let $M_j$ represent the match where $\forall i \leq n$, we get the pairing: $(a_i, b_{i+j})$.
+
+    \textbf{Claim:} $\forall ~0 \leq j < n, ~M_j$ is a stable match
+    \newline \textit{Proof:} Take into consideration some $M_j$ where every $a_i$ is paired with $b_{i+j}$. We will define preference by re-indexing based on $i$.
+
+    \[p_{a_i}(b_s) = s - i \pmod{n}\in \{0, 1, \dots, n-1\}\]
+    \[p_{b_i}(a_s) = s - (i + 1) \pmod{n}\in \{0, 1, \dots, n-1\}\]
+    
+    The only blocking pairs that $a_i$ can form are with $b_k$ s.t.
+    \begin{align*}
+        p_{a_i}(b_k) &< p_{a_i}(b_{i+j}) \\
+        p_{a_i}(b_k) &< j \\
+        k-i \pmod{n} &< j
+    \end{align*}
+    Note that every such $b_k$ is paired with $a_{k-j}$ in this matching. 
+    \begin{align*}
+        &\text{Define } t \in \{0,1, \dots, n-1 \} \equiv k-i \pmod{n} \\
+        & \Rightarrow t < j \text{ and } i \equiv k - t \pmod{n}\\ \\
+        &p_{b_k}(a_{i}) = i - (k + 1) \equiv (k-t)-(k+1) \equiv -t-1 \equiv (n-1)-t\pmod{n} \\
+        &p_{b_k}(a_{k-j}) = (k-j) - (k + 1) \equiv -j - 1 \equiv (n-1)-j \pmod{n}\\
+        & \Rightarrow p_{b_k}(a_{k-j}) < p_{b_k}(a_{i})
+    \end{align*}
+
+    We see that $a_{k-j}$ is more forward in $b_k$'s preferance ordering than $a_i$ so
+    $\exists$ no blocking pairs. $\forall j < n, ~M_j$ is a stable match. Therefore, for all $i \in [n], \exists M_j$ s.t. $a_i$ can be matched to any $b_i \in B$.
+
+    \item[c)] False. Consider the following preference ordering:
+
+    \begin{align*}
+        &a_1: b_1, b_2, b_3, b_4    &b_1: a_2, a_3, a_4, a_1\\
+        &a_2: b_2, b_3, b_1, b_4    &b_1: a_3, a_4, a_1, a_2\\
+        &a_3: b_3, b_1, b_2, b_4    &b_1: a_4, a_1, a_2, a_3\\
+        &a_4: b_1, b_2, b_4, b_3    &b_1: a_2, a_3, a_4, a_1\\
+    \end{align*}
+
+    If we run Gale-Shapely with the above preference orderings and A making the offers, then we end with the following results:
+
+    \begin{verbatim}
+    Round 1: Offer from a1 to b1 was accepted resulting in   a1 ------ b1
+
+    Round 2: Offer from a2 to b2 was accepted resulting in   a2 ------ b2
+    
+    Round 3: Offer from a3 to b3 was accepted resulting in   a3 ------ b3
+    
+    Round 4: Offer from a4 to b1 was accepted resulting in   a4 ------ b1
+    
+    Round 5: Offer from a1 to b2 was accepted resulting in   a1 ------ b2
+    
+    Round 6: Offer from a2 to b3 was accepted resulting in   a2 ------ b3
+    
+    Round 7: Offer from a3 to b1 was accepted resulting in   a3 ------ b1
+    
+    Round 8: Offer from a4 to b2 was accepted resulting in   a4 ------ b2
+    
+    Round 9: Offer from a1 to b3 was accepted resulting in   a1 ------ b3
+    
+    Round 10: Offer from a2 to b1 was accepted resulting in   a2 ------ b1
+    
+    Round 11: Offer from a3 to b2 was accepted resulting in   a3 ------ b2
+    
+    Round 12: Offer from a4 to b4 was accepted resulting in   a4 ------ b4
+    
+    Final pairings: 
+    a2 ------ b1
+    a3 ------ b2
+    a1 ------ b3
+    a4 ------ b4
+    \end{verbatim}
+
+    No member of A is matched with their first or second choice.
+\end{itemize}
+
+
+\section*{Problem 4}
+\begin{itemize}
+    \item[a)] Consider the following preference ordering:
+    \begin{align*}
+        &a_1: b_1, b_3, b_2    &b_1: a_2, a_1, a_3\\
+        &a_2: b_3, b_1, b_2    &b_1: ~???\\
+        &a_3: ~???             &b_1: a_2, a_1, a_3\\
+    \end{align*}
+
+    \begin{table}[h!]
+    \centering
+    \caption{Laissez-Faire Matching}
+    \label{tab:simple3col}
+    \begin{tabular}{|c|c|}   
+        \hline
+        \textbf{Blocking Pair Matched} & \textbf{Current Matching} \\
+        \hline
+        Starting & $(a_1, b_1), (a_2, b_2),  (a_3, b_3)$ \\
+        \hline
+        $(a_2, b_1)$ & $(a_1, b_2), (a_2, b_1), (a_3, b_3)$ \\
+        \hline
+        $(a_2, b_3)$ & $(a_1, b_2), (a_2, b_3), (a_3, b_1)$ \\
+        \hline
+        $(a_1, b_3)$ & $(a_1, b_3), (a_2, b_2), (a_3, b_1)$ \\
+        \hline
+        $(a_1, b_1)$ & $(a_1, b_1), (a_2, b_2),  (a_3, b_3)$ \\
+        \hline
+    \end{tabular}
+    \end{table}
+    We can see that this cycle of matching and breaking pairs repeats infinitely.
+
+
+    \item[b)] Let the $\Omega = \{M_i | ~i \in [n!]\}$ dictate the space of all possible matchings between groups A and B. By fixing a member of either group A or B, and then comparing happiness levels with every possible partner, we get a strict list of preferences for every member of A and B. We can then use the Gale-Shapely algorithm to show that there exists at least one stable matching in $\Omega$ where there exists no blocking pairs and therefore no further possible operations for Laissez-Faire to proceed. 
+    
+    As Laissez-Faire proceeds, it generates a sequence matchings: $M_1, M_2, M_3, M_4, \dots$
+    
+    In order for this sequence to go on infinitely, there must exist some $M_k$ which repeats. There exists a finite number of possible matchings, at least one of which is stable, if there is no repetition, it will at some point reach the stable matching. Worst case, the algorithm exhausts all possibilities
+    
+    Let $P = \{(a_i, b_j) \in M_k ~|~ (a_i, b_j) \text{ are removed in some operation during the cycle}\}$ 
+    
+    Note by definition, each operation takes two pairings and returns two new pairings, one of which will have a greater happiness level than the original two pairings.
+
+    Consider the $(a_i, b_j) \in P$ with the highest happiness value as defined by $h: [n] \times [n] \rightarrow \mathbb{R}$. We will dictate that pair as $(a_{i_o}, b_{j_o})$. By definition, $(a_{i_o}, b_{j_o})$ must be removed in some operation during the cycle which then creates a new pairing $(a_{i_1}, b_{j_1})$ with a higher happiness level than $(a_{i_o}, b_{j_o})$.  
+
+    $(a_{i_1}, b_{j_1})$ must then be removed in another operation since $(a_{i_1}, b_{j_1})$ does not exist in $M_k$ and we aim to return to $M_k$ after some number of operations. However, any operation that $(a_{i_1}, b_{j_1})$ is removed through will result in another pairing with a greater level of happiness than $(a_{i_1}, b_{j_1})$. Similar to $(a_{i_1}, b_{j_1})$, this pairing does not exist in $M_k$ and will have to be removed in another operation. This pattern continues, therefore, there can exist no order of operations that will cycle back to $M_k$ and in turn, there cannot exist a cycle. The algorithm must terminate at some stable matching because there exists no repetition and there exists at least one stable matching in the possibility space.
+
+    The number of possible matachings is n! so the number of steps in this operation is bounded above by $n! - 1$s. 
+
+\end{itemize}
+
+\section*{Problem 5}
+\begin{itemize}
+    \item[a)] Let $h: [n] \rightarrow \mathbb{Z}$ represent the height of each player at any time during the game. We dictate the potential function:
+    \[\phi = \sum_{i=1}^{n} h(i) \leq n\]
+
+    Every round, the total height of all the players decrease by 1 so the function is bounded above by the starting max height of $n$. And since by the rules of the game, it is impossible for players to reach a negative height, the function is bounded below by 1 (assuming that $n \neq 0$). This is because there must exist a winner(s) as the game will end before everyone is eliminated. There exists conditions where the game will terminate before the potential functions reached a value of 1, however it is guaranteed to terminate when it reaches a value of 1.
+
+    Therefore, the game must terminate. There exists (n-1) possible rounds before the value hits the minimum in the worst case and so there can only be $n-1$ rounds.
+
+    \item[b)]We can represent the value of each player at any height, $h$, using the following function: 
+    \[f(h) = 2^h\]
+
+    With this function, the total value of the system does not change. We can map out the shifts in value for any competition which takes place at height $h+k$. We see that the total value contributed by these points does not change and therefore, as the game proceeds, the total value of the system does not change.
+
+    \begin{align*}
+    3*f(k) &= f(k+1) + 2 * f(k-1) \\
+    3*2^k &= 2^{k+1} + 2 * 2^{k-1} \\
+    3*2^k &= 2^{k+1} + 2^{k} \\
+    3*2^k &= 2^k(2+1)
+    \end{align*}
+
+    We start the game with $2n$ points since $n$ players are at height $=1$. In the maximum case, all players except 1 are at height $=0$. These players contribute $n-1$ points to the system and the last player contributes $n+1$ points. Therefore, the maximum height of this player is $\lfloor log_2(n+1) \rfloor$.
+
+    In the minimum case, we have 2 players at every height from height $= 0$ to height = $m$ where $m-1$ is the maximum height of any player to account for $h=0$.
+    \begin{align*}
+    \sum_{h=1}^m 2*2^{h-1} &\leq 2n \\
+    2^{m+1} - 2 &\leq 2n \\
+    2^{m+1} &\leq 2n + 2 \\
+    log(2^{m+1}) &\leq log(2n + 2) \\
+    (m+1) * log(2) &\leq log(2n + 2) \\
+    m+1 &\leq \frac{log(2n + 2)}{log(2)} \\
+    m-1 &\leq \frac{log(2n + 2)}{log(2)} - 2\\\\
+    \Rightarrow m - 1 &\sim \frac{log(2n + 2)}{log(2)} - 2 \\
+    m - 1 &\sim log(n)
+    \end{align*}
+
+    The max height of the winner is $\theta(log(n))$.
+        
+    \item[c)] Let $x_h$ denote the number of people at height $h\ge 0$ at any moment of the game, and for each $h\ge 1$ let $c_h$ denote the total number of competitions that are held at height $h$ over the entire run of the game. let $x_h$ represent the number of players at height $h$ .
+    
+
+    \[x_h^f = x_h^s -3c_h + c_{h-1} + 2c_{h+1},\]
+
+    Note that $c_0:=0$, and $x_1^{s}=n$ while $x_h^{s}=0$ for all $h\neq 1$. Once $c_h$ is known, the final player counts, $x_h^f$, are uniquely determined.
+    
+    Consider two different orders of competitions producing competition counts at each height:
+    $\{c_h\}_{h\ge 1}$, $\{c'_h\}_{h\ge 1}$; and therfore different final counts: $\{x_h^{\mathrm{f}}\}_{h\ge 0}$ and $\{x_h^{\prime\,\mathrm{f}}\}_{h\ge 0}$.
+    
+    Define $d_h := c_h-c'_h$. From this, we get the following difference: 
+    \[x_h^{\mathrm{f}}-x_h^{\prime\,\mathrm{f}}
+    =
+    -3d_h
+    +d_{h-1}
+    +2d_{h+1}.\]
+
+    
+    By part(a), the game always terminates, therefore, only finitely many heights
+    have a non-negative competition count in either run. Therefore, there exists some $H$ such that
+    $c_h=c'_h=0$ for all $h>H$, and $d_h=0$ for all $h>H$.
+    
+    (\textit{Proof by contradiction}) Assume that $d_h \neq 0~ \forall h$ and $t$ be the largest $h$ s.t. $d_t\neq 0$.
+    \[
+    x_{t+1}^{\mathrm{f}}-x_{t+1}^{\prime\,\mathrm{f}}
+    =
+    -3d_{t+1}+d_t+2d_{t+2}
+    =
+    d_t \neq 0.
+    \]
+    However, no competitions occur above height $t$ in either run
+    so $x_{t+1}^{\mathrm{f}}=x_{t+1}^{\prime\,\mathrm{f}}=0$. Hence $x_{t+1}^{\mathrm{f}}-x_{t+1}^{\prime\,\mathrm{f}} = 0$, a contradiction. Therefore $d_h=0$ for all $h\ge 1$ and 
+    \[c_h=c'_h \quad \text{for all } h\ge 1.
+    \]
+
+    We know the number of competitions per height $h$ is fixed and we know that the number of players at every height is deterministic and modeled by:
+    \[x_h^f = x_h^s -3c_h + c_{h-1} + 2c_{h+1},\]
+    
+    Thus the final number of people at each height is independent of the order in which competitions are held.
+
+    
+
+    \item[d)]  Let $x_h$ denote the number of players at height $h$ at the end of the game.
+    From part (b), using $f(h)=2^h$ we have the value invariant:
+    \[
+    \sum_{h\ge 0} x_h 2^h \;=\; 2n,
+    \]
+    and the total number of players (including eliminated players at height $0$) is invariant:
+    \[
+    \sum_{h\ge 0} x_h \;=\; n.
+    \]
+    Subtracting these two gives
+    \[\sum_{h\ge 1} x_h(2^{h-1}) \;=\; n.\]
+    At termination we additionally have the condition:
+    \[
+    x_h\in\{0,1,2\}\quad\text{for all }h\ge 1.
+    \]
+    Thus the player representation is described by
+    $(x_1,x_2,\dots)$ with values in $\{0,1,2\}$ satisfying the above conditions, and
+    \[
+    x_0 \;=\; n-\sum_{h\ge 1} x_h
+    \]
+    is the number of eliminated players.
+    
+    \[
+    \text{Define } V(H) \;:=\; \max \sum_{h=1}^H x_h 2^{h-1}
+    \quad\text{s.t. } x_h\le 2.
+    \]
+    This maximum is achieved by taking $x_h=2$, therefore,
+    \[
+    V(H)=2\sum_{h=1}^H (2^{h-1})
+    =2(2^{H+1}-2-H)
+    =2^{H+2}-4-2H.
+    \]
+    
+    Let r = n. For $h=H,H-1,\dots,1$, we choose $x_h\in\{0,1,2\}$ to be the
+    smallest value such that
+    \[
+    0 \le r - x_h (2^{h-1}) \le V(h-1),
+    \]
+    and then update $r = r-x_h (2^{h-1})$.
+    
+    Eventually, $r=0$ without breaking previously set conditions and $x_0 = n-\sum_{h\ge 1} x_h$.
+\end{itemize}
+
+
+
+\end{document}
