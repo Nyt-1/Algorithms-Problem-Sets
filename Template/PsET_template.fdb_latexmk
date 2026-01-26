@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1769459778.40784 "/Users/nyt/Algorithms/Algorithms-PSet2-1/Pset_3.tex" "Pset_3.pdf" "Pset_3" 1769459779.64102 0
-  "/Users/nyt/Algorithms/Algorithms-PSet2-1/Pset_3.tex" 1769459776.81466 6935 74019cf40e5edbd963e467178c1760f4 ""
+["pdflatex"] 1769467740.9002 "/Users/nyt/Algorithms/PSets/Template/PsET_template.tex" "PsET_template.pdf" "PsET_template" 1769467742.16911 0
+  "/Users/nyt/Algorithms/PSets/Template/PsET_template.tex" 1769459468.31723 3413 95b5c594eb1ca502057c7f2d8b7ac5a4 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -22,13 +22,8 @@
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmsy6.tfm" 1136768653 1116 933a60c408fc0a863a92debe84b2d294 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm" 1136768653 1120 8b7d695260f3cff42e636090a8002094 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb" 1248133631 32080 340ef9bf63678554ee606688e7b5339d ""
-  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb" 1248133631 36741 fa121aac0049305630cf160b86157ee4 ""
-  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb" 1248133631 35469 70d41d2b9ea31d5d813066df7c99281c ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb" 1248133631 32722 d7379af29a190c3f453aba36302ff5a9 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb" 1248133631 32362 179c33bbf43f19adbb3825bb4e36e57a ""
-  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1248133631 32726 0a1aea6fcd6468ee2cf64d891f5c43c8 ""
-  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
-  "/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1248133631 34694 ad62b13721ee8eda1dcc8993c8bd7041 ""
   "/usr/local/texlive/2025/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1461363279 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/local/texlive/2025/texmf-dist/tex/generic/iftex/iftex.sty" 1734129479 7984 7dbb9280f03c0a315425f1b4f35d43ee ""
   "/usr/local/texlive/2025/texmf-dist/tex/generic/iftex/ifvtex.sty" 1572645307 1057 525c2192b5febbd8c1f662c9468335bb ""
@@ -152,10 +147,10 @@
   "/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1769201402 5467155 19efa205003f9ecad95fbbaa6ff24da1 ""
   "/usr/local/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1741450574 3345740 46b66fdb0378f7bf5921b5eabf1762b8 ""
   "/usr/local/texlive/2025/texmf.cnf" 1741450484 577 418a7058ec8e006d8704f60ecd22c938 ""
-  "Pset_3.aux" 1769459779.54347 32 c81c40425fbb5e93b90fba65da0b5e61 "pdflatex"
-  "Pset_3.tex" 1769459776.81466 6935 74019cf40e5edbd963e467178c1760f4 ""
+  "PsET_template.aux" 1769467742.09953 32 044b7f8fc9779af7531264e0c5c84b6d "pdflatex"
+  "PsET_template.tex" 1769459468.31723 3413 95b5c594eb1ca502057c7f2d8b7ac5a4 ""
   (generated)
-  "Pset_3.aux"
-  "Pset_3.log"
-  "Pset_3.pdf"
+  "PsET_template.aux"
+  "PsET_template.log"
+  "PsET_template.pdf"
   (rewritten before read)
