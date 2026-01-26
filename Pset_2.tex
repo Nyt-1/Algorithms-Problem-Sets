@@ -86,6 +86,9 @@
 \thispagestyle{empty}       % zet paginanummering uit voor deze pagina
 
 % kopje met bijbehorende titel; varianten: \subsection, \subsubsection
+\section*{Problem 0: Collaborators}
+Anthony Yoon, Michael Lee
+
 \section*{Problem 1}
  \begin{center}
     \begin{tikzpicture}[
@@ -201,7 +204,7 @@ The shortest path of distance 24 availble are:
 \begin{proof}
   Kruskal's Algorithm for finding minimum subtrees (MST). We claim the MSTs $T, T', T''$ are unqiue due to having distinct edge weights. This is because an MST contains exactly $|V| - 1$ edges and if all edges have different weights, no combonation of $|V| - 1$ edges will amount to the same total weight. Therefore, Kruskal's Algorithm will find the only MST for $G, G', G''$.
 
-  We perform Kruskal's Algorithm on $G, G', G''$. Kruskal's Algorithm takes edges by decending weight and continues or discards them based on if a cycle is formed. In order for an edge, to exist in $T''$ but not in $T' \cup T$, it would need to form a cycle in either $T'$ or $T$ but not in $T''$.
+  We perform Kruskal's Algorithm on $G, G', G''$. Kruskal's Algorithm takes edges by ascending weight and continues or discards them based on if a cycle is formed. In order for an edge, to exist in $T''$ but not in $T' \cup T$, it would need to form a cycle in either $T'$ or $T$ but not in $T''$.
 
   WLOG, assume that $e_{ab}$ is the first edge which form a cycle in $T$ but not in $T''$. This implies that in $T$, there exists another path, $P$, from $a$ to $b$ which does not exist in $T''$. Let $e_{uv}$ represent some edge in path $P$ which does not exist in $T''$ and $e_{uv}$ would have had to appear earlier in the algorithm. From Kruskal's Algorithm, since $e_{uv}$ is not in $T''$, we know it forms a cycle, which means that there is an alternative path from $u$ to $v$ and therefore, a path from $a$ to $b$. Contradiction.
 
