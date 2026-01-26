@@ -1,0 +1,163 @@
+\documentclass[12pt]{article}
+ \usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ}
+\usepackage{booktabs}
+\usepackage{}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{subcaption}
+\usetikzlibrary{arrows.meta, automata, positioning}
+
+
+\pagestyle{fancy}
+\setlength{\headheight}{65pt}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{sol}
+    {\emph{Solution:}
+    }
+    {
+    \qed
+    }
+\specialcomment{com}{ \color{blue} \textbf{Comment:} }{\color{black}} %for instructor comments while grading
+\NewEnviron{probscore}{\marginpar{ \color{blue} \tiny Problem Score: \BODY \color{black} }}
+
+\newcounter{subproblem}
+% \renewcommand{\thesubproblem}{\alph{subproblem}} % letters 
+\renewcommand{\thesubproblem}{\arabic{subproblem}} % numbers
+\newenvironment{subprob}[1][]{
+  \refstepcounter{subproblem}
+  \begin{trivlist}
+  \item[\hskip \labelsep {\bfseries (\thesubproblem)}]
+}{
+  \end{trivlist}
+}
+\newenvironment{subsol}
+    {\emph{Solution:}
+    }
+    {
+    \qed
+    }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength {\marginparwidth }{2cm}
+
+
+\newtheorem*{remark}{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbff{Z}}
+\newcommand{\st}{\text{s.t}}
+\newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
+\newcommand{\fP}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
+
+
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  breaklines=true,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  numbers=left,            
+  numberstyle=\tiny\color{gray}, 
+  numbersep=10pt 
+}
+
+
+% titel en auteur van het document
+\title{Theory of Algorithms Problem Set \#}
+\author{Nicole Tian}
+% \date{} % de datum van het document 
+
+% einde definities; start van de tekst
+\begin{document}
+
+\maketitle                  % maakt een kopje met titel, auteur en datum
+\thispagestyle{empty}       % zet paginanummering uit voor deze pagina
+
+% kopje met bijbehorende titel; varianten: \subsection, \subsubsection
+\section*{Problem 1}
+\begin{figure}[H]
+\centering
+\begin{tabular}{c l c l}
+\toprule
+ &  &  & \\
+\midrule
+ &  &  & \\
+ &  &  & \\
+ &  &  & \\
+ &  &  & \\
+ &  &  & \\
+ &  &  & \\
+ &  &  & \\
+ &  &  & \\
+\bottomrule
+\end{tabular}
+\end{figure}
+
+\section*{Problem 1: Recurrence Relations (30 points, 5 extra credit points available)}
+Solve each of the following recurrence relations with the given initial value(s). Show your work.
+\begin{enumerate}
+\item[(a)] 10 points: $T(n) = 2T(\frac{n}{4}) + 2n$, $T(1) = 3$.
+\item[(b)] 10 points: $T(n) = 4T(\frac{n}{3}) + 5n^2$, $T(1) = 1$.
+\item[(c)] 10 points: $T(n) = T(\frac{n}{2}) + 2n - 1$, $T(1) = 1$.
+\item[(d)] 5 points extra credit: $T(n) = 12T(\frac{n}{2}) - 32T(\frac{n}{4}) + n^2 + 3n$, $T(1) = 1$, $T(2) = 2$.
+\end{enumerate}
+\section*{Problem 2: The Greedy Algorithm Fell Behind (20 points)}
+Consider the following situation. There is a problem you are trying to design an algorithm for. For this problem, you have a way to evaluate the performance of any algorithm at each time $t$. In particular, for any algorithm $A$, you have a function $v_A: \mathbb{N} \cup \{0\} \to \mathbb{R}$ which gives the performance $v_A(t)$ of the algorithm at time $t$ (where we always set $v_A(0) = 0$ as there is no progress at time $0$). 
+
+You have designed a greedy algorithm $A$ and you think you have an argument for why it should always stay ahead. However, your partner comes up with another algorithm $B$ and you find that at the end, algorithm $B$ did better than algorithm $A$, i.e., $v_{B}(t_{end}) > v_{A}(t_{end})$. 
+
+You would like to figure out where your reasoning failed. To do this, you would like to find a time $t \in \{0,1,\ldots,t_{end}-1\}$ such that $v_{A}(t) \geq v_{B}(t)$ but $v_{A}(t+1) < v_{B}(t+1)$, i.e., your greedy algorithm was ahead (or at least equal) at time $t$ but fell behind at time $t+1$.
+
+For example, if $t_{end} = 8$ and the performances of the algorithms were as follows
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|}
+ \hline
+ Time $t$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$\\
+ \hline
+ $v_A(t)$ & $0$ & $7$ & $9$ & $10$ & $14$ & $18$ & $24$ & $28$ & $30$\\
+ \hline
+ $v_B(t)$ & $0$ & $4$ & $7$ & $8$ & $16$ & $17$ & $22$ & $30$ & $32$\\
+ \hline
+\end{tabular}
+\end{center}
+then either $t = 3$ or $t = 6$ would be a correct answer.
+\begin{enumerate}
+\item[(a)] 10 points: Give a fast algorithm for finding such a time $t$.
+\item[(b)] 5 points: Explain why your algorithm is correct. 
+\item[(c)] 5 points: What is the runtime of your algorithm? Explain why your algorithm has this runtime.
+\end{enumerate}
+\section*{Problem 3: Target Sum (25 points)}
+You have $n$ integers $x_1,\ldots,x_n$ and you want to either find four of these integers which sum to a target integer $S$ or show that this is impossible. In other words, you either want to find four indices $i < j < k < l \in [n]$ such that $x_i + x_j + x_k + x_l = S$ or show that no such indices exist.
+\begin{enumerate}
+\item[(a)] 10 points: Give an $O(n^2log(n))$ time algorithm to solve this problem. Hint is available.
+\item[(b)] 10 points: Explain why your algorithm is correct.
+\item[(c)] 5 points: Explain why your algorithm takes $O(n^2log(n))$ time.
+\end{enumerate}
+Note: Unlike most divide and conquer algorithms, the algorithm for this problem will not be recursive.
+\section*{Problem 4: Rephrasing of Problem 5 in Chapter 5 of Kleinberg-Tardos (25 points)}
+Let's say that we are given $n$ lines $\{y = {a_i}x + b_i: i \in [n]\}$ and we want to find all of the lines which can be seen from above without passing through another line. In other words, we want to find all $i \in [n]$ such that $\exists x \in \mathbb{R} \left(\forall j \in [n] \setminus \{i\} ({a_i}x + b_i \geq {a_j}x + b_j)\right)$.\\
+\\
+\begin{enumerate}
+\item[(a)] 10 points: Give a fast algorithm to solve this problem. Hint is available.
+\item[(b)] 10 points: Explain why your algorithm is correct.
+\item[(c)] 5 points: What is the runtime of your algorithm? Explain why your algorithm has this runtime.
+\end{enumerate}
+\newpage
+\section*{Hints}
+3a. You should consider sums of pairs of the integers and how they can be combined. When trying to combine these sums, be careful that you do not use the same integer twice.\\
+\\
+4a. You can divide up the lines based on their slope. If you solve the problem for the subset of lines with smaller slopes and the subset of lines with larger slopes, can you combine your solutions to obtain a solution for the entire problem?
+
+\end{document}
