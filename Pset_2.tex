@@ -309,14 +309,14 @@ Two players are playing the following pebble game. There is a collection of pebb
 \item[(b)] We claim that if one player plays the greedy strategy, there is no benefit in the other player deviating. 
 
 \begin{proof}
-  WLOG, let $k$ be the last time a player (arbitrary) deviates from the greedy solution. The number of pebbles either players gained in the previous $k-1$ rounds is constant. 
+  WLOG, let $k$ be the last time a player (arbitrary) deviates from the greedy solution. The number of pebbles either players gained in the previous $k-1$ turns is constant. 
 
-  Let $M_k, M_{k+1}, M_{k+2}, \dots, M_n$ represent the order of the greatest number of pebbles of any one color starting from round $k$. We note that if both players follow the greedy strategy, the order of colors picked would be:
+  Let $M_k, M_{k+1}, M_{k+2}, \dots, M_n$ represent the order of the greatest number of pebbles of any one color starting from turn $k$. We note that if both players follow the greedy strategy, the order of colors picked would be:
   \begin{equation}
     \{M_k, M_{k+1}, M_{k+2}, \dots, M_{n}\}
   \end{equation}
 
-  If at round $k$, the player picks some $M_j$ instead of $M_k$, then after round $j$, the order in which colors are chosen reflect the greedy strategy so we only need to consider rounds $k$ through $j$:
+  If at turn $k$, the player picks some $M_j$ instead of $M_k$, then after turn $j$, the order in which colors are chosen reflect the greedy strategy so we only need to consider turns $k$ through $j$:
   \begin{equation}
     \{M_k, M_{k+1}, M_{k+2}, \dots, M_{j}\}
   \end{equation}
@@ -342,7 +342,7 @@ Two players are playing the following pebble game. There is a collection of pebb
   \end{align}
   $\Delta P \geq 0$. We can match each $M_i$ with $- M_{i+1}$ which is by definition smaller.
 
-  Therefore, the change in pebbles by taking the maximum is as good as or better than any other strategy. We can extend this argument to previous rounds where either player deviates. 
+  Therefore, the change in pebbles by taking the maximum is as good as or better than any other strategy. We can extend this argument to previous turns where either player deviates. 
 \end{proof}
 
 \item[(c)] Let there be 22 pebbles total with the following distributions: 
