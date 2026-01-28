@@ -50,8 +50,8 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Q}{\mathbb{Q}}
-\newcommand{\Z}{\mathbff{Z}}
-\newcommand{\st}{\text{s.t}}
+\newcommand{\Z}{\mathbf{Z}}
+\newcommand{\st}{\text{ s.t }}
 \newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
 \newcommand{\fP}{\mathbb{P}}
 \newcommand{\E}{\mathbb{E}}
@@ -157,7 +157,13 @@ For example, if $t_{end} = 8$ and the performances of the algorithms were as fol
 \end{center}
 then either $t = 3$ or $t = 6$ would be a correct answer.
 \begin{enumerate}
-\item[(a)] Binary Search
+\item[(a)] Consider the following $(O(n^2log(n)))$ algorithm:
+\begin{enumerate}
+  \item[1)] Create pair sums ($\binom{n}{2} \text{ pairs } \Rightarrow O(n^2)$ time)
+  \item[2)] Sort the pairs (sort with $n^2$ objects $\Rightarrow O(n^2log(n))$)
+  \item[3)] Perform two pointer search and if we find a match, check the indicies of all pair sums that equal the two current pointers to find a disjoint set if it exists.
+  (two pointer search with $n^2$ objects and additional step $\Rightarrow O(n^2)$)
+\end{enumerate}
 \item[(b)] 5 points: Explain why your algorithm is correct. 
 \item[(c)] 5 points: What is the runtime of your algorithm? Explain why your algorithm has this runtime.
 \end{enumerate}
