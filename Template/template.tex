@@ -9,9 +9,26 @@
 \usepackage{amsmath}
 \usepackage{tikz}
 \usepackage{subcaption}
+\usepackage{float}
 \usetikzlibrary{arrows.meta, automata, positioning}
 
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  breaklines=true,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  numbers=left,            
+  numberstyle=\tiny\color{gray}, 
+  numbersep=10pt 
+}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagestyle{fancy}
 \setlength{\headheight}{65pt}
 \newenvironment{problem}[2][Problem]{\begin{trivlist}
@@ -55,40 +72,10 @@
 \newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
 \newcommand{\fP}{\mathbb{P}}
 \newcommand{\E}{\mathbb{E}}
-
-
-\usepackage{listings}
-\usepackage{xcolor}
-\lstset{
-  basicstyle=\ttfamily\small,
-  backgroundcolor=\color{gray!10},
-  frame=single,
-  breaklines=true,
-  keywordstyle=\color{blue},
-  commentstyle=\color{gray},
-  stringstyle=\color{red},
-  showstringspaces=false,
-  numbers=left,            
-  numberstyle=\tiny\color{gray}, 
-  numbersep=10pt 
-}
-
-
-% titel en auteur van het document
-\title{Theory of Algorithms Problem Set \#}
-\author{Nicole Tian}
-% \date{} % de datum van het document 
-
-% einde definities; start van de tekst
-\begin{document}
-
-\maketitle                  % maakt een kopje met titel, auteur en datum
-\thispagestyle{empty}       % zet paginanummering uit voor deze pagina
-
-% kopje met bijbehorende titel; varianten: \subsection, \subsubsection
-\section*{Problem 1}
+\newcommand{\maketable}{
 \begin{figure}[H]
 \centering
+\caption{caption}
 \begin{tabular}{c l c l}
 \toprule
  &  &  & \\
@@ -103,24 +90,24 @@
  &  &  & \\
 \bottomrule
 \end{tabular}
-\end{figure}
+\end{figure}}
+
+
+% titel en auteur van het document
+\title{Problem Set \#}
+\author{Nicole Tian}
+% \date{} % de datum van het document 
+
+\begin{document}
+
+\maketitle                  % maakt een kopje met titel, auteur 
+\thispagestyle{empty}       % zet paginanummering uit voor deze 
+
+
+\section*{Problem 1}
+
+\maketable
 
 
 
-\section*{Methode}
-
-Leg uit van welke data je gebruik hebt gemaakt, en hoe je die data gemaakt of verzameld hebt. Leg daarna uit hoe je de data geanalyseerd hebt. Wat heb je bijvoorbeeld uitgerekend, en wat heb je met elkaar vergeleken.
-
-\section*{Resultaten }
-
-Geef aan wat de uitkomsten van je onderzoek zijn.
-
-\section*{Discussie}
-
-Bespreek hier wat het antwoord op je onderzoeksvraag is, en of dit iets betekent voor verder onderzoek naar bijvoorbeeld het nut van online adverteren. Je kunt ook iets zeggen over de tekortkomingen van je eigen onderzoek (wat had er beter gekund?) en mogelijkheden tot vervolgonderzoek. 
-
-Je verslag is  \textbf{500 \`a 600 woorden} lang,  de lijst met bronnen niet meegerekend. 
-
-\newpage
-\section*{Bronnen}
 \end{document}
