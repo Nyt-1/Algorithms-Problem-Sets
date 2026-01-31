@@ -50,7 +50,7 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Q}{\mathbb{Q}}
-\newcommand{\Z}{\mathbf{Z}}
+\newcommand{\Z}{\mathbb{Z}}
 \newcommand{\st}{\text{ s.t }}
 \newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
 \newcommand{\fP}{\mathbb{P}}
@@ -157,29 +157,74 @@ For example, if $t_{end} = 8$ and the performances of the algorithms were as fol
 \end{center}
 then either $t = 3$ or $t = 6$ would be a correct answer.
 \begin{enumerate}
-\item[(a)] Consider the following $(O(n^2log(n)))$ algorithm:
-\begin{enumerate}
-  \item[1)] Create pair sums ($\binom{n}{2} \text{ pairs } \Rightarrow O(n^2)$ time)
-  \item[2)] Sort the pairs (sort with $n^2$ objects $\Rightarrow O(n^2log(n))$)
-  \item[3)] Perform two pointer search and if we find a match, check the indicies of all pair sums that equal the two current pointers to find a disjoint set if it exists.
-  (two pointer search with $n^2$ objects and additional step $\Rightarrow O(n^2)$)
-\end{enumerate}
+\item[(a)] 10 points: Give a fast algorithm for finding such a time $t$.
 \item[(b)] 5 points: Explain why your algorithm is correct. 
 \item[(c)] 5 points: What is the runtime of your algorithm? Explain why your algorithm has this runtime.
 \end{enumerate}
+
+
+
 \section*{Problem 3: Target Sum (25 points)}
 You have $n$ integers $x_1,\ldots,x_n$ and you want to either find four of these integers which sum to a target integer $S$ or show that this is impossible. In other words, you either want to find four indices $i < j < k < l \in [n]$ such that $x_i + x_j + x_k + x_l = S$ or show that no such indices exist.
 \begin{enumerate}
-\item[(a)] 10 points: Give an $O(n^2log(n))$ time algorithm to solve this problem. Hint is available.
-\item[(b)] 10 points: Explain why your algorithm is correct.
-\item[(c)] 5 points: Explain why your algorithm takes $O(n^2log(n))$ time.
-\end{enumerate}
-Note: Unlike most divide and conquer algorithms, the algorithm for this problem will not be recursive.
-\section*{Problem 4: Rephrasing of Problem 5 in Chapter 5 of Kleinberg-Tardos (25 points)}
-Let's say that we are given $n$ lines $\{y = {a_i}x + b_i: i \in [n]\}$ and we want to find all of the lines which can be seen from above without passing through another line. In other words, we want to find all $i \in [n]$ such that $\exists x \in \mathbb{R} \left(\forall j \in [n] \setminus \{i\} ({a_i}x + b_i \geq {a_j}x + b_j)\right)$.\\
-\\
+\item[(a)] Consider the following algorithm:
 \begin{enumerate}
-\item[(a)] 10 points: Give a fast algorithm to solve this problem. Hint is available.
+  \item[1)] Create 3-tuples of the form $(V, i, j)$ with $V$ representing the combined value of integers $x_i$ and $x_j$ s.t. $i < j$. 
+  \item[2)] Sort by $V, i, j$.
+  \item[3)] perform two-pointer search to look for two values $V$ that add up to $S$.
+  \item[4)] If we find two such values, we iterate through all the right 3-tuples that have value $V_R$ and create two maps from $i$ to $j$ and vice versa. For each 3-tuple $(V, i, j)$, we add $j$ to i-map[i] and $i$ to j-map[j]. Note down the total number of 3-tuples. 
+  \item[5)] Move left-pointer along the 3-tuples of value $V_L$. We take each 3-tuple, $(V_L, i_l, j_l)$. 
+  \begin{enumerate}
+  \item The number of tuples with a value of $V_R$ which contains either $j_l$ and $i_l$ can be represented as follows with \\
+  
+  $\sigma=
+    \begin{cases}
+      1, & V_R = V_L\\
+      0, & V_R \neq V_L
+    \end{cases}$
+  
+    \begin{equation}
+      |\text{Tuples}_{i_l, j_l}| = |\text{i-map}[i_l]| + |\text{i-map}[j_l]| + |\text{j-map}[i_l]| + |\text{j-map}[j_l]| - \sigma
+    \end{equation}
+    
+    If $|\text{Tuples}_{i_l, j_l}| < |\text{Tuples}|$, then we have a solution and we can iterate through the values to look for it. 
+  \item Otherwise, we move onto the next tuple on the left-side until there are no more 3-tuples of value $V_L$.
+  \item If there exists no more 3-tuples of value $V_L$, we continue with the two pointer search algorithm with different values of $V_L$ and $V_R$ and repeat steps 2-5. \\
+  
+  Note that if $V_L + V_R = S$, then we cannot have another $V_L' + V_R = S \st V_l' \neq V_L$, so we move onto completely new values of $V_L$ and $V_R$, and therefore, under this algorithm, we never rebuild the $i$-$j$-mappings for any value $V$ more than once nor do we traverse any tuple twice. 
+  \end{enumerate}
+  \item[6)] If the two-pointers meet each other without finding a solution, we are done and no solution exists. 
+\end{enumerate}
+
+\item[(b)] 10 points: Explain why your algorithm is correct.
+
+\item[(c)] Consider the time complexity of each step in the algorithm:
+\begin{enumerate}
+  \item[1)] Creating pair sums of the form $(V, i, j)$ creates $\binom{n}{2} \text{ pairs } \Rightarrow O(n^2)$ time
+  \item[2)] Sorting the 3-tuples is a mergesort with $n^2$ objects $\Rightarrow O(n^2log(n))$
+  \item[3)] Traversing the 3-tuples $\Rightarrow O(n^2)$ time
+  \item[4)] Creating the mappings for every value of $V$ takes $O(n^2)$ overall because we add each 3-tuple to some mapping once
+  \item[5)] Iterating within the mapping if there exists a solution happens at most once and in the worst case takes $O(n^2)$ comparisons
+\end{enumerate}
+$\Rightarrow O(n^2) +O(n^2log(n)) + O(n^2) + O(n^2) + O(n^2) = O(n^2log(n))$ 
+
+\end{enumerate}
+
+
+
+
+\section*{Problem 4: Rephrasing of Problem 5 in Chapter 5 of Kleinberg-Tardos (25 points)}
+Let's say that we are given $n$ lines $\{y = {a_i}x + b_i: i \in [n]\}$ and we want to find all of the lines which can be seen from above without passing through another line. In other words, we want to find all $i \in [n]$ such that $\exists x \in \mathbb{R} \left(\forall j \in [n] \setminus \{i\} ({a_i}x + b_i \geq {a_j}x + b_j)\right)$.
+
+\begin{enumerate}
+\item[(a)] Denote all lines, $\{y = {a_i}x + b_i: i \in [n]\}$, as tuples of the form $(a_i, b_i)$. We sort the tuples by $a_i$. We iteratively go through the tuples, start with the second tuple, denoted as $(a_c, b_c)$:
+\begin{enumerate}
+  \item[(1)] Take the tuple with an index one less than the current, denote as $(a_p, b_p)$, if it exists, otherwise continue onto the next tuple
+  \item Compute intersection of the two tuples as lines. Denote this point as $p_c$
+  \item[(2)] Take the second most recently computed point, $p_p$, if it exists. Otherwise, continue onto the next tuple 
+  \item[(3)]Compare $p_c$ and $p_p$. If $p_c > p_p$, we continue onto the next tuple. Otherwise, we remove $(a_p, b_p)$ and $p_p$ and repeat step 1-4.
+  \item[(4)] The final answer is the number of tuples left, or the number of points + 1.
+\end{enumerate}
 \item[(b)] 10 points: Explain why your algorithm is correct.
 \item[(c)] 5 points: What is the runtime of your algorithm? Explain why your algorithm has this runtime.
 \end{enumerate}
