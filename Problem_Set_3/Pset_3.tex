@@ -188,11 +188,11 @@ For example, if $t_{end} = 8$ and the performances of the algorithms were as fol
 \end{center}
 then either $t = 3$ or $t = 6$ would be a correct answer.
 \begin{enumerate}
-\item[(a)] Both algorithms start at performance $0$ at time $0$. Therefore, $v_A(0) \geq v_B(0)$ trivially, however, $v_A(t_\text{end}) < v_B(t_\text{end})$ by assertion. Therefore $\exists \text{ at least one }t \in \{0,1,\ldots,t_{end}-1\}$ such that $v_{A}(t) \geq v_{B}(t)$ but $v_{A}(t+1) < v_{B}(t+1)$. To find time $t$, we perform binary search as follows:
+\item[(a)] We perform binary search as follows:
 \begin{enumerate}
-  \item[1)] Start with two pointers, the left at $t=0$ and the right at $t=t_\text{end}$.
-  \item[2)] Consider the array defined by the left and right pointers
-  \item[3)] If there only exists two elements in the array, return the lower index, otherwise, find the middle of the array by averaging the two pointer positions. Denote this as $t=m$.
+  \item[1)] Start with $l=0$ and $r=t_\text{end}$.
+  \item[2)] Consider the array defined by $l$ and $r$.
+  \item[3)] If there only exists two elements in the array, return the lower index, otherwise, find the middle of the array by averaging the two pointer positions with floor division. Denote this as $t=m$.
   \item[4)] If $v_A(m) < v_B(m)$, we repeat steps 2-4 setting $r = m$. if $v_A(m) \geq v_B(m)$, we repeat steps 2-4 setting $l = m$.
 \end{enumerate}
 
@@ -206,15 +206,45 @@ then either $t = 3$ or $t = 6$ would be a correct answer.
               r = m
           else:
               l = m
-      return l
+      return l #left index
   \end{lstlisting}
   \end{algorithm}
 
 
-\item[(b)] 5 points: Explain why your algorithm is correct. 
-If $v_A(0) \geq v_B(0)$ and $v_A(m) < v_B(m)$, then $\exists \text{ at least one }t \in \{0,1,\ldots,m-1\}$ such that $v_{A}(t) \geq v_{B}(t)$ 
+\item[(b)] To prove this algorithm is correct, we show that a solution always exists and that the algorithm will find such a time $t$. 
+\begin{theorem}
+  $\exists \text{ at least one }t \in \{0,1,\ldots,t_{end}-1\}$ such that $v_{A}(t) \geq v_{B}(t)$ and $v_{A}(t+1) < v_{B}(t+1)$.
+\end{theorem}
+\begin{proof}
+  Let $S = \{t \in \{0,1,\ldots,t_{end}-1\} | ~v_{A}(t) \geq v_{B}(t)\}$
+  Both algorithms start at performance $0$ at time $0$. Therefore, $v_A(0) \geq v_B(0)$ and $S$ is non-empty. $S$ is also finite due to the discrete nature of the parent set of possible $t$. $\nextline$
+  Let $t_o := Max\{S\}.$ $v_{A}(t_o) \geq v_{B}(t-O)$ by definition of $S$. $\nextline$ $v_{A}(t_o+1) < v_{B}(t_o+1)$ becuase otherwise, $t_o+1 \in S \tand t_o+1 > t_o$, contradiciting the fact that $t$ is the maximum value in $S$ or $t_o+1 = t_{end}$, contradicting the fact that $v_{A}(t_{end}) < v_{B}(t_{end})$.
+ 
+  Therefore, $\exists \text{ at least one }t \in \{0,1,\ldots,t_{end}-1\}$ such that $v_{A}(t) \geq v_{B}(t)$ and $v_{A}(t+1) < v_{B}(t+1)$.
+\end{proof}
 
-\item[(c)] 5 points: What is the runtime of your algorithm? Explain why your algorithm has this runtime.
+\begin{theorem}
+  The algorithm will always terminate and return a $t \in \{0,1,\ldots,t_{end}-1\}$ such that $v_{A}(t) \geq v_{B}(t)$ and $v_{A}(t+1) < v_{B}(t+1)$.
+\end{theorem}
+\begin{proof} At any point during the algorithm, the following sign invariant is maintained: 
+  \[v_{A}(l) \geq v_{B}(l) \tand v_{A}(r) < v_{B}(r).\]
+ This is because at every iteration of the while-loop, the the state of the $m$ is discrete, either $v_{A}(m) < v_{B}(m) \tor v_{A}(m) \geq v_{B}(m)$ and we pick the portion of the array that satisfies the invariant. As a consequence, $l \neq r$ because otherwise, the array has 1 element and the invariant cannot hold.
+
+  Additionally, at every iteration of the while-loop, $m \neq l \tand m \neq r$. We already cover the case of $m = l = r$. WLOG, assume $m \neq l$ but $m = r$:
+  \begin{align*}
+  \frac{l+r}{2} &= r + \frac{1}{2}\\
+  l+r &= 2r + 1\\
+  l &= r + 1
+  \end{align*}
+  $\Rightarrow r - l = 1$. The loop would not have been executed and instead the algorithm would return the left index $l$.$\nextline$
+  Therefore, each time we execute the while-loop, we set one of the ends of the array to $m$ and becuase $m \neq l \tand m \neq r$, the array is guarenteed to become smaller. Due to the discrete size of the array, this process has a upper bound and will terminate, at which time, the algorithm will return the index of the left pointer as a valid time $t$.
+  
+  Now that we have proven the algorithm terminate and provides a time $t$, we prove that the answer is correct.
+
+  $l \neq r$ at any point in the algorithm due to the sign invariant, however the algorithm terminates, therefore, we know that the algorithm terminates when $r - l = 1$ which will happen at one point. And due to the sign invariant, $v_{A}(l) \geq v_{B}(l)$ and $v_{A}(l+1) < v_{B}(l+1)$. The algorithm returns a valid time $t$.
+\end{proof}
+
+\item[(c)] Run time of $O(nlog(n))$ becuase it is a binary search algorithm.
 \end{enumerate}
 
 
@@ -323,10 +353,5 @@ Let's say that we are given $n$ lines $\{y = {a_i}x + b_i: i \in [n]\}$ and we w
 \item[(b)] 10 points: Explain why your algorithm is correct.
 \item[(c)] 5 points: What is the runtime of your algorithm? Explain why your algorithm has this runtime.
 \end{enumerate}
-\newpage
-\section*{Hints}
-3a. You should consider sums of pairs of the integers and how they can be combined. When trying to combine these sums, be careful that you do not use the same integer twice.\\
-\\
-4a. You can divide up the lines based on their slope. If you solve the problem for the subset of lines with smaller slopes and the subset of lines with larger slopes, can you combine your solutions to obtain a solution for the entire problem?
 
 \end{document}
