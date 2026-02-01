@@ -188,12 +188,12 @@ For example, if $t_{end} = 8$ and the performances of the algorithms were as fol
 \end{center}
 then either $t = 3$ or $t = 6$ would be a correct answer.
 \begin{enumerate}
-\item[(a)] Both algorithms start at performance $0$ at time $0$. Therefore, $v_A(0) \geq v_B(0)$ trivially, however, $v_A(t_\text{end}) < v_B(t_\text{end})$ by assertion. Therefore $\exists \text{ at least one }t \in \{0,1,\ldots,t_{end}-1\}$ such that $v_{A}(t) \geq v_{B}(t)$ but $v_{A}(t+1) < v_{B}(t+1)$ because of the Mean Value Theorem. To find time $t$, we perform binary search as follows:
+\item[(a)] Both algorithms start at performance $0$ at time $0$. Therefore, $v_A(0) \geq v_B(0)$ trivially, however, $v_A(t_\text{end}) < v_B(t_\text{end})$ by assertion. Therefore $\exists \text{ at least one }t \in \{0,1,\ldots,t_{end}-1\}$ such that $v_{A}(t) \geq v_{B}(t)$ but $v_{A}(t+1) < v_{B}(t+1)$. To find time $t$, we perform binary search as follows:
 \begin{enumerate}
   \item[1)] Start with two pointers, the left at $t=0$ and the right at $t=t_\text{end}$.
   \item[2)] Consider the array defined by the left and right pointers
   \item[3)] If there only exists two elements in the array, return the lower index, otherwise, find the middle of the array by averaging the two pointer positions. Denote this as $t=m$.
-  \item[4)] If $v_A(m) < v_B(m)$, we repeat steps 2-4 with $l = 0 \tand r = m$. if $v_A(m) \geq v_B(m)$, we repeat steps 2-4 with $l = m \tand r = t_\text{end}$
+  \item[4)] If $v_A(m) < v_B(m)$, we repeat steps 2-4 setting $r = m$. if $v_A(m) \geq v_B(m)$, we repeat steps 2-4 setting $l = m$.
 \end{enumerate}
 
   \begin{algorithm}[H]
