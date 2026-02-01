@@ -2,16 +2,31 @@
  \usepackage[margin=1in]{geometry} 
 \usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ}
 \usepackage{booktabs}
-\usepackage{}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-\usepackage{amsmath}
 \usepackage{tikz}
 \usepackage{subcaption}
+\usepackage{float}
 \usetikzlibrary{arrows.meta, automata, positioning}
 
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  breaklines=true,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  numbers=left,            
+  numberstyle=\tiny\color{gray}, 
+  numbersep=10pt 
+}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagestyle{fancy}
 \setlength{\headheight}{65pt}
 \newenvironment{problem}[2][Problem]{\begin{trivlist}
@@ -41,8 +56,19 @@
     {
     \qed
     }
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+% numbered within sections (optional)
+% \newtheorem{theorem}{Theorem}[section]
+% \newtheorem{lemma}[theorem]{Lemma} % shares theorem counter
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \setlength {\marginparwidth }{2cm}
+\newcommand{\nextline}{\\[0.2em]}
 
 
 \newtheorem*{remark}{Remark}
@@ -50,8 +76,10 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Q}{\mathbb{Q}}
-\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Z}{\mathbf{Z}}
 \newcommand{\st}{\text{ s.t }}
+\newcommand{\tand}{\text{ and }}
+\newcommand{\tor}{\text{ or }}
 \newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
 \newcommand{\fP}{\mathbb{P}}
 \newcommand{\E}{\mathbb{E}}
@@ -196,7 +224,47 @@ You have $n$ integers $x_1,\ldots,x_n$ and you want to either find four of these
   \item[6)] If the two-pointers meet each other without finding a solution, we are done and no solution exists. 
 \end{enumerate}
 
-\item[(b)] 10 points: Explain why your algorithm is correct.
+\item[(b)] We will prove the above algorithm is correct by proving that if there exists a solution, the algorithm will find one, and if the algorithm finds no solution, there does not exist a solution.
+\begin{lemma}
+  Denote $R$ to be the set of all 3-tuples of value $V_R$ and $L$ to be the set of all 3-tuples of value $V_L$. 
+  
+  The algorithm outputs a solution $\iff$ there exist $(V_L,i,j)\in L$ and $(V_R,k,l)\in R \st \{i,j\}\cap\{k,l\}=\varnothing$ 
+  
+  Note that, the algorithm is not guarneteed to return any specific pairs.
+\end{lemma}
+\begin{proof} $\nextline$
+  Fix $V_L$ and $V_R \st V_L+V_R=S$ and consider the right block $R$. For any indices $i,j$, let $T(i,j)$ denote the number of tuples in $R$ that contain either $i$ or $j$. Then the number of tuples in $R$ that contain neither $i$ nor $j$ is $|R|-T(i,j)$.
+
+  By construction of the maps in step (4), the algorithm computes
+  \[
+  T(i,j)=|\text{i-map}[i]|+|\text{j-map}[i]|+|\text{i-map}[j]|+|\text{j-map}[j]|-\sigma,
+  \]
+  where $\sigma=1$ if $V_L=V_R$ (equivalently, $(i,j)\in R$) and $\sigma=0$ otherwise.
+  Thus the algorithm tests whether $T(i,j)<|R|$, which is equivalent to
+  $|R|-T(i,j)>0$.
+
+  ($\Rightarrow$) If the algorithm outputs a solution, then for some $(V_L,i,j)\in L$ it found $T(i,j)<|R|$, hence $|R|-T(i,j)>0$. Therefore there exists a tuple $(V_R,k,l)\in R$ that contains neither $i$ nor $j$, i.e.\ $\{i,j\}\cap\{k,l\}=\varnothing$, so disjoint pairs exist.
+
+  ($\Leftarrow$) If there exist disjoint pairs $(V_L,i,j)\in L$ and $(V_R,k,l)\in R$ with $\{i,j\}\cap\{k,l\}=\varnothing$, then at least one tuple in $R$ contains neither $i$ nor $j$.
+  Hence $|R|-T(i,j)>0$, equivalently $T(i,j)<|R|$, so the algorithm will pass the test in
+  step (5a) and output a solution.
+\end{proof}
+
+\begin{theorem}
+  There exists a solution $\iff$ the algorithm finds a solution
+\end{theorem}
+\begin{proof} $\nextline$
+  ($\Rightarrow$)
+    Assume $\exists x_i, x_j, x_k, x_l \st x_i + x_j + x_k + x_l = S \tand i < j < k < l$. $\nextline$
+    WLOG, assume that $x_i < x_j < x_k < x_l$. Then $x_i + x_j < x_k + x_l$.
+    By Step (1) and (2) in our algorithm, $\exists V_1= x_i + x_j \tand V_2 = x_k + x_l$. $\nextline$
+    Our pointers start out on $V_L \leq V_1, \tand V_R \geq V_2$. By the algorithm, the $V$-values in sorted increasing order and therefore, the two pointer algorithm will find a solution to $V_L + V_R = S$ if it exists. $\nextline$
+    A solution exist by assertion and therefore we will find one. Note this solution may not be $V_1, V_2$ and so we will proceed with some arbitrary values $V_L, V_R$. $\nextline$
+    Within $V_L, V_R$, there are two possibilities: $\exists$ two disjoint pairs or $\nexists$ exists two disjoint pairs. If the disjoint pairs exist, by Lemma 1, the algorithm will find it and the proof ends trivially. If the disjoint pairs do not exist then we know that $V_L \leq V_1, \tand V_R \geq V_2$ and we continue the algorithm, discarding the current $V_L, V_R$. This is because two-pointer starts with the most extreme pair of high and low values so $V_1 \tand V_2$ must be more moderate than $V_L \tand V_R$ if $V_L \tand V_R$ were found first. $\nextline$
+    Therefore, we will either land on some $V_L, V_R$ which contains two disjoint pairs and the proof ends, or we will land on $V_1, V_2$ and because it is guarenteed to contain two disjoint pairs in $V_1 \tand V_2$, by Lemma 1, the algorithm will output a solutions.
+
+  ($\Leftarrow$) Assume the algorithm finds a solution. By Step (3) of our algorithm, it means that ours pointers found some $V_L, V_R \st V_L + V_R = S$. By Lemma 1, there exist $(V_L,i,j)\in L$ and $(V_R,k,l)\in R \st \{i,j\}\cap\{k,l\}=\varnothing$. Therefore $x_i + x_j + x_k + x_l = V_L + V_R = S$
+\end{proof}
 
 \item[(c)] Consider the time complexity of each step in the algorithm:
 \begin{enumerate}
