@@ -164,19 +164,91 @@ We set $k = log_3(n)$
 \end{align*}
 
 
-\item[(c)] $T(n) = T(\frac{n}{2}) + 2n - 1 = 4n - log_2(n) + 3$
+\item[(c)] $T(n) = T(\frac{n}{2}) + 2n - 1 = 4n - log_2(n) - 3$
 \begin{align*}
   T(n) &= T(\frac{n}{2}) + 2n - 1 \\
-  &= T(\frac{n}{2^k}) - k + 2n\sum_{i=0}^{k+1}(\frac{1}{2})^i \\
+  &= T(\frac{n}{2^k}) - k + 2n\sum_{i=0}^{k-1}(\frac{1}{2})^i \\
   &= T(\frac{n}{2^k}) - k + 4n(1-(\frac{1}{2})^k) \\
 \end{align*}
 We set $k = log_2(n)$
 \begin{align*}
   &= T(1) - log_2(n) + 4n(1-\frac{1}{n}) \\
   &= 1 - log_2(n) + 4n - 4 \\
-  &= 4n - log_2(n) + 3 \\
+  &= 4n - log_2(n) - 3 \\
 \end{align*}
-\item[(d)] 5 points extra credit: $T(n) = 12T(\frac{n}{2}) - 32T(\frac{n}{4}) + n^2 + 3n$, $T(1) = 1$, $T(2) = 2$.
+\item[(d)] $T(n)=12T(n/2)-32T(n/4)+n^2+3n$
+
+Let \(n=2^k\) and define \(S(k)=T(2^k)\).
+\[
+S(k)=12S(k-1)-32S(k-2)+4^k+3\cdot 2^k,
+\]
+
+\textbf{Homogeneous part:}
+\[
+S_h(k)=12S_h(k-1)-32S_h(k-2).
+\]
+We set \(S_h(k)=r^k\):
+\[
+r^k=12r^{k-1}-32r^{k-2}\;\Rightarrow\; r^2-12r+32=0
+\;\Rightarrow\; (r-8)(r-4)=0
+\]
+\[
+S_h(k)=A\cdot 8^k + B\cdot 4^k.
+\]
+
+\textbf{Non-homogeneous part:}
+\[4^k+3\cdot 2^k\]
+\[
+S_p(k)=Ck4^k + D2^k.
+\]
+\[
+S_p(k-1)=C(k-1)4^{k-1}+D2^{k-1},\qquad
+S_p(k-2)=C(k-2)4^{k-2}+D2^{k-2}.
+\]
+Substitute into
+\[
+S_p(k)-12S_p(k-1)+32S_p(k-2)=4^k+3\cdot 2^k.
+\]
+\[
+Ck4^k-12\cdot C(k-1)4^{k-1}+32\cdot C(k-2)4^{k-2}
+=4^k\left(Ck-3C(k-1)+2C(k-2)\right)
+\]
+\[
+=4^k\left(Ck-3Ck+3C+2Ck-4C\right)=4^k(-C).
+\]
+\(-C=1\Rightarrow C=-1\).
+
+\[
+D2^k-12\cdot D2^{k-1}+32\cdot D2^{k-2}
+=2^k\left(D-6D+8D\right)=2^k(3D).
+\]
+\(3D=3\Rightarrow D=1\).
+\[
+S_p(k)=-k4^k+2^k.
+\]
+
+\[
+\Rightarrow S(k)=S_h(k)+S_p(k)=A8^k+B4^k-k4^k+2^k.
+\]
+
+\textbf{Base cases:}
+\[
+S(0)=1:\quad A+B+1=1 \Rightarrow A+B=0,
+\]
+\[
+S(1)=2:\quad 8A+4B-4+2=2 \Rightarrow 8A+4B=4 \Rightarrow 2A+B=1.
+\]
+\[
+S(k)=8^k+2^k-(k+1)4^k.
+\]
+
+Convert back to \(n\):
+\[
+n=2^k,\quad 8^k=n^3,\quad 4^k=n^2,\quad 2^k=n,\quad k=\log_2 n.
+\]
+\[
+\Rightarrow T(n)=n^3+n-(\log_2 n+1)n^2
+\]
 \end{enumerate}
 
 \section*{Problem 2}
@@ -417,8 +489,8 @@ Let's say that we are given $n$ lines $\{y = {a_i}x + b_i: i \in [n]\}$ and we w
 \end{proof}
 From Corollaries 1 and 2, we can show that $S = S'$.
 
-\item[(c)] This algorithm is $O(nlog(n))$ time because the sort takes $O(nlog(n))$. There are $n$ lines and $n-1$ points. Each line and point is added/created once and at most, remove once. 
-$\Rightarrow O(nlog(n)) + O(n) = O(nlog(n))$
+\item[(c)] The begining sort is $O(nlog(n))$. There are $n$ lines and $n-1$ intersection points. Each line and point is added/created once, and at most, remove once so the time complexity of iterating through the lines is $O(n)$.
+$\nextline\Rightarrow O(nlog(n)) + O(n) = O(nlog(n))$
 \end{enumerate}
 
 \end{document}
