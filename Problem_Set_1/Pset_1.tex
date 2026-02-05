@@ -1,17 +1,88 @@
-\documentclass[11pt]{article}
-\usepackage[utf8]{inputenc}  % gebruik de juiste 'character encoding'
-\usepackage[english]{babel}    % definitie van de taal (Engels is de standaard)
-\usepackage{hyperref}        % geef URLs netjes weer
-\usepackage{booktabs}		 % mooiere tabellen
-\usepackage{a4wide}          % papierformaat en marges
-\pagestyle{empty}            % zet paginanummering uit
+\documentclass[12pt]{article}
+ \usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts, enumitem, fancyhdr, color, comment, graphicx, environ}
+\usepackage{booktabs}
+\usepackage[colorinlistoftodos]{todonotes}
 \usepackage{algorithm}
-\usepackage{float}      % for [H] to force placement
+\usepackage{algpseudocode}
+\usepackage{tikz}
+\usepackage{subcaption}
+\usepackage{float}
+\usetikzlibrary{arrows.meta, automata, positioning}
+
 \usepackage{listings}
 \usepackage{xcolor}
-\usepackage{amsmath}
-\usepackage{parskip}
-\usepackage{amssymb}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  breaklines=true,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  numbers=left,            
+  numberstyle=\tiny\color{gray}, 
+  numbersep=10pt 
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+\setlength{\headheight}{65pt}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{sol}
+    {\emph{Solution:}
+    }
+    {
+    \qed
+    }
+\specialcomment{com}{ \color{blue} \textbf{Comment:} }{\color{black}} %for instructor comments while grading
+\NewEnviron{probscore}{\marginpar{ \color{blue} \tiny Problem Score: \BODY \color{black} }}
+
+\newcounter{subproblem}
+% \renewcommand{\thesubproblem}{\alph{subproblem}} % letters 
+\renewcommand{\thesubproblem}{\arabic{subproblem}} % numbers
+\newenvironment{subprob}[1][]{
+  \refstepcounter{subproblem}
+  \begin{trivlist}
+  \item[\hskip \labelsep {\bfseries (\thesubproblem)}]
+}{
+  \end{trivlist}
+}
+\newenvironment{subsol}
+    {\emph{Solution:}
+    }
+    {
+    \qed
+    }
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+
+% numbered within sections (optional)
+% \newtheorem{theorem}{Theorem}[section]
+% \newtheorem{lemma}[theorem]{Lemma} % shares theorem counter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength {\marginparwidth }{2cm}
+\newcommand{\nextline}{\\[0.2em]}
+
+
+\newtheorem*{remark}{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbf{Z}}
+\newcommand{\st}{\text{ s.t }}
+\newcommand{\tand}{\text{ and }}
+\newcommand{\tor}{\text{ or }}
+\newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
+\newcommand{\fP}{\mathbb{P}}
+\newcommand{\E}{\mathbb{E}}
 
 
 
@@ -308,8 +379,14 @@ Finally, if we pair $b_1$ with $a_4$, we force $b_3$ to be with $a_1$, $b_2$ to 
     3*2^k &= 2^k(2+1)
     \end{align*}
 
-    We start the game with $2n$ points since $n$ players are at height $=1$. In the maximum case, all players except 1 are at height $=0$. These players contribute $n-1$ points to the system and the last player contributes $n+1$ points. Therefore, the maximum height of this player is $\lfloor log_2(n+1) \rfloor$.
-
+    We start the game with $2n$ and this total cannot change. Any one player's point count is determined by $2^h$ and this cannot be greater than $2n$. Therefore, the maximum height of any player is 
+    \begin{align*}
+        2^h &\leq 2n \\
+        hlog_2(2) &= log_2(2n) \\
+        h &= \frac{log_2(2n)}{log_2(2)} \\
+        h &\sim log(n)
+    \end{align*}
+    
     In the minimum case, we have 2 players at every height from height $= 0$ to height = $m$ where $m-1$ is the maximum height of any player to account for $h=0$.
     \begin{align*}
     \sum_{h=1}^m 2*2^{h-1} &\leq 2n \\
@@ -322,48 +399,34 @@ Finally, if we pair $b_1$ with $a_4$, we force $b_3$ to be with $a_1$, $b_2$ to 
     \Rightarrow m - 1 &\sim \frac{log(2n + 2)}{log(2)} - 2 \\
     m - 1 &\sim log(n)
     \end{align*}
-
     The max height of the winner is $\theta(log(n))$.
+    
+    
+    \item[c)]
+    \begin{lemma}
+        The order of competitions held is communatitve. Let $x_i$ represent the number of players at $h = i$. If $x_a \geq 3$ and $x_b \geq 3$, then $(T_a)(T_b) = (T_b)(T_a)$
+    \end{lemma}
+    \begin{proof}
+        The only operation that can decrease the number of players at any height $h = i$ is $T_i$. Therefore, if both $x_a \tand x_b$ have at least 3 players each and $x \neq b$, then both operations are valid regardless of the order they occur in, even if they are adjacent heights.
+
+        The changes to the number of players at any height is also represented by addition and subtraction which are linear operations, therefore the resulting change in players is the same, regardless of order. In other words, the effect of these two operations on the state of the game remains unchanged after each swap.
+    \end{proof}
+
+    \begin{theorem}
+        If $S = (T_{i_1})(T_{i_2})...(T_{i_n})$ and $S' = (T_{j_1})(T_{j_2})...(T_{j_m})$ are both valid order of competitons that result in a termiantion condition that ends the game, then $S'$ can be rewritten to be $S$.
+    \end{theorem}
+    \begin{proof}
+        Let $T_{i_k}$ be the first operation in S which differs from it's counter part in $S'. \nextline$ 
+        Either, $k > m$ (which is impossible since both sequences are supposed to result in a termiantion condition), or $i_k \neq j_k$.
+
+        Since the current conditions in both the $S$ game and the $S'$ game are identical, it means that $x_{i_k} \geq 3 \tand x_{j_k} \geq 3$ and so both operations are valid. Therfore, there must exist an operation $T_{i_k}$ somewhere further down in $S'$ becuase $x_{i_k} \geq 3$ and the only operation which can decrease the number of players at $i_k is T_{i_k}$. We claim we can bring $T_{i_k}$ to the front by using Lemma 1. 
+
+        We take the first instance of $T_{i_k}$ we find furhter down in $S'$. We compare it to the the operation directly in front of it and because this is the first isntance of $T_{i_k}$, the operation in front of it cannot also be $T_{i_k}$, but it is a valid move because $S'$ is a valid ordering. Therefore, we can switch the two operations. We can do this over and over again, until we bring $T_{i_k}$ to the front of $S'$ where it aligns with it's corresponding operation in $S$. 
         
-    \item[c)] Let $x_h$ denote the number of people at height $h\ge 0$ at any moment of the game, and for each $h\ge 1$ let $c_h$ denote the total number of competitions that are held at height $h$ over the entire run of the game. let $x_h$ represent the number of players at height $h$ .
-    
+        We can repeat this process with each difference in the two orderings as we iterate through them, until $S' = S$. Therfore, regardless of the order in which the competitions are held, it can be transformed into another target ordering via a series of switches due to the communatitve nature of the operations.
+    \end{proof}
 
-    \[x_h^f = x_h^s -3c_h + c_{h-1} + 2c_{h+1},\]
-
-    Note that $c_0:=0$, and $x_1^{s}=n$ while $x_h^{s}=0$ for all $h\neq 1$. Once $c_h$ is known, the final player counts, $x_h^f$, are uniquely determined.
-    
-    Consider two different orders of competitions producing competition counts at each height:
-    $\{c_h\}_{h\ge 1}$, $\{c'_h\}_{h\ge 1}$; and therfore different final counts: $\{x_h^{\mathrm{f}}\}_{h\ge 0}$ and $\{x_h^{\prime\,\mathrm{f}}\}_{h\ge 0}$.
-    
-    Define $d_h := c_h-c'_h$. From this, we get the following difference: 
-    \[x_h^{\mathrm{f}}-x_h^{\prime\,\mathrm{f}}
-    =
-    -3d_h
-    +d_{h-1}
-    +2d_{h+1}.\]
-
-    
-    By part(a), the game always terminates, therefore, only finitely many heights
-    have a non-negative competition count in either run. Therefore, there exists some $H$ such that
-    $c_h=c'_h=0$ for all $h>H$, and $d_h=0$ for all $h>H$.
-    
-    (\textit{Proof by contradiction}) Assume that $d_h \neq 0~ \forall h$ and $t$ be the largest $h$ s.t. $d_t\neq 0$.
-    \[
-    x_{t+1}^{\mathrm{f}}-x_{t+1}^{\prime\,\mathrm{f}}
-    =
-    -3d_{t+1}+d_t+2d_{t+2}
-    =
-    d_t \neq 0.
-    \]
-    However, no competitions occur above height $t$ in either run
-    so $x_{t+1}^{\mathrm{f}}=x_{t+1}^{\prime\,\mathrm{f}}=0$. Hence $x_{t+1}^{\mathrm{f}}-x_{t+1}^{\prime\,\mathrm{f}} = 0$, a contradiction. Therefore $d_h=0$ for all $h\ge 1$ and 
-    \[c_h=c'_h \quad \text{for all } h\ge 1.
-    \]
-
-    We know the number of competitions per height $h$ is fixed and we know that the number of players at every height is deterministic and modeled by:
-    \[x_h^f = x_h^s -3c_h + c_{h-1} + 2c_{h+1},\]
-    
-    Thus the final number of people at each height is independent of the order in which competitions are held.
+   Because any two valid terminating sequences can be transformed into each other by valid swapes, they must have the same count of each move and therefore the same number of competitions and the same final player count at each height.
 
     
 
