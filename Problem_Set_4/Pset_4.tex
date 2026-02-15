@@ -22,6 +22,7 @@
 \newtheorem{example}[theorem]{Example}
 \newtheorem{remark}[theorem]{Remark}
 \usetikzlibrary{arrows.meta, automata, positioning}
+\usepackage[normalem]{ulem}
 
 \usepackage{listings}
 \usepackage{xcolor}
@@ -93,13 +94,15 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Q}{\mathbb{Q}}
-\newcommand{\Z}{\mathbf{Z}}
-\newcommand{\st}{\text{ s.t }}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\st}{\text{ s.t. }}
 \newcommand{\tand}{\text{ and }}
 \newcommand{\tor}{\text{ or }}
 \newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
 \newcommand{\fP}{\mathbb{P}}
 \newcommand{\E}{\mathbb{E}}
+\newcommand{\msout}[1]{\text{\sout{\ensuremath{#1}}}}
+
 
 
 \usepackage{listings}
@@ -278,23 +281,103 @@ then it is best to take jobs $2$ and $5$ which gives a total work of $8$.
 
 Note: For this problem, you may assume that all of the times $a_1,\ldots,a_n,b_1,\ldots,b_n$ are distinct.
 \begin{enumerate}
-\item[(a)] 5 points: Your friend proposes the following greedy algorithm for the special case of the problem where $w_i = 1$ for all $i \in [n]$ (so you just want to take as few jobs as possible):
+\item[(a)] Incorrect Algorithm. Consider the following set of jobs sorted by start time:
+\[ \{[0,2], [3,6], [4,8], [7,16], [9,11], [10,13], [12,14], [15,17]\} \]
 
-At each step, consider the job $i$ which ends earliest among all of the jobs starting after your current end time. Take the job $j$ which ends latest among all of the jobs which start after your current end time but before job $i$ ends.
+and end time:
+\[ \{[0,2], [3,6], [4,8], [9,11], [10,13], [12,14], [7,16], [15,17]\} \]
 
-More precisely, the algorithm is as follows:
-\begin{enumerate}
-\item[] Preprocessing: Order the jobs by both their start and end time.
-\item[] Initialization: Set $S = \emptyset$, $t = min_{i \in [n]}{\{a_i\}}$.
-\item[] Iterative step: Go through the array of jobs sorted by their end time and take the first job $i$ such that $a_i \geq t$. Then go through the jobs sorted by their start time and find the job $j$ such that $t \leq a_j < b_i$ and $b_j$ is maximized (note that we can have $j = i$). Add $j$ to $S$ and set $t = b_j$.
+By the greedy algorithm, we have the following algorithm progression:
+    \begin{table}[H]
+    \centering
+    \caption{Greedy}
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{S} & \textbf{t} & \textbf{$[a_i, b_i]$} & \textbf{Looking for $[a_i, b_i]$} \\
+        \hline
+        $\{\}$ & $0$ & $[0,2]$ & $\msout{[0,2]}, [3,6], [4,8], [9,11], [10,13], [12,14], [7,16], [15,17]$\\
+        \hline
+        $\{[0,2]\}$ & $2$ & $[3,6]$ & $\msout{[0,2]}, \msout{[3,6]}, [4,8], [9,11], [10,13], [12,14], [7,16], [15,17]$\\
+        \hline
+        $\{[0,3], [4,8]\}$ & $8$ & $[9,11]$ & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, [10,13], [12,14], [7,16], [15,17]$\\
+        \hline
+        $\{[0,3], [4,8], [10,13]\}$ & $13$ & $[15, 17]$ & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, \msout{[10,13]}, \msout{[12,14]}, \msout{[7,16]}, \msout{[15,17]}$ \\
+        \hline
+        $\{[0,3], [4,8], [10,13], [15, 17]\}$ & $17$ & DONE & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, \msout{[10,13]}, \msout{[12,14]}, \msout{[7,16]}, \msout{[15,17]}$ \\
+        \hline
+    \end{tabular}
+    \end{table}
+    However, evidently the best schedule would be $S = \{[0,2], [3, 6], [7,16]\}$
+
+\item[(b)] We start with the array of all jobs, denoted $A$, sorted by start time.
+We define overlap as follows: two jobs $I=[a,b]$ and $J=[a',b']$ overlap iff $a<b'$ and $a'<b$.
+
+\begin{algorithm}[H]
+\caption{Minimize total weight of an excusing schedule}
+\begin{lstlisting}
+Minimize(i):
+    # i is an index; we recurse on A[i:]
+    if i == n:
+        return 0
+
+    Jobs = A[i..n-1]
+    J = min{job in Jobs: key=job.end}
+
+    Candidates = {X in Jobs : X overlaps J}
+
+    best = +infinity
+    for X in Candidates:
+        # recurse on the first job whose start is >= X.end
+        k = first index >= i such that A[k].start >= X.end
+        best = min(best, w(X) + Minimize(k))
+
+    return best
+\end{lstlisting}
+\end{algorithm}
+We compute $\texttt{Minimize}(0)$. With memoization, each suffix index $i$ is evaluated once, so there are $O(n)$ subproblems: $\text{Minimize}(0), \text{Minimize}(1),\dots, \text{Minimize}(n-1)$.
+
+\textbf{Recurrence Relation:}
+
+Assume jobs are indexed 1..n and sorted by start time.
+Job $i$ is represented by interval $[a_i,b_i]$ and weight $w_i$.
+
+Let $F(i)$ denote the minimum total work needed to produce a valid schedule using only jobs $i,i+1,\dots,n$.
+
+Let $J(i)$ be the index of the job in $\{i,\dots,n\}$
+with the earliest end time:
+\[ J(i) = \min_{k \in \{i,\dots,n\}} \{b_k\}\]
+
+Let $C(i)$ be the set of jobs that overlap $J(i)$:
+\[C(i) = \{\, x \in \{i,\dots,n\}:(a_x,b_x)\cap(a_{J(i)},b_{J(i)}) \neq \emptyset \,\}\]
+
+For any chosen job $x$, let $\text{next}(x)$ be the index of the first job whose start time is at least $b_x$, assume $a_{n+1} = +\infty$.:
+\[\text{next}(x) \;=\; \min\{\, t \in \{i,\dots,n+1\} \;:\; a_t \ge b_x \,\}\]
+
+\textbf{Base Case:} $F(n+1) = 0$
+
+\textbf{Recurrence Relation:} $F(i) = \min_{x \in C(i)} ( w_x + F(\text{next}(x)))$
+
+
+\item[(c)] We will prove that this recurrence relation is correct by showing 
+\[F(i) = \min_{x \in C(i)} (w_x + F(\text{next}(x)))\]
+
+$F(i)$ is the minimum total work needed to produce a valid schedule using jobs $i,i+1,\dots,n$. $\forall [a_i, b_i] \in C(j), ~a_i < b_{J(i)} \tand b_i \geq b_{J(i)}$, therefore $b_{J(i)} \in [a_i, b_i], ~\forall [a_i, b_i] \in C(j)$ and so they all overlap each other. $\forall [a_i, b_i] \in C(j)$, there exists a minimum workload to fill up the time not covered by $[a_i, b_i]$. By definition this is $F(next(x))$. Adding $[a_i, b_i]$ to the schedule covers the entire interval. Therefore, $min_{x \in C(i)} (w_x + F(\text{next}(x)))$ produces a valid schedule and $F(i)$ is the the minimum total work to produce a valid schedule.
+
+$\Rightarrow F(i) \leq \min_{x \in C(i)} (w_x + F(\text{next}(x))) \nextline$
+
+
+We claim that $w_x + F(\text{next}(x)), ~\forall x \in C(i)$ are the only ways to form valid schedules. 
+
+We must take a job in $C(i)$, otherwise $J(i)$ is open for the taking and therefore whatever schedule we come up with is invalid. And by definition, $\text{next}(x)$ is the set of available jobs open for the taking and $F(\text{next}(x))$ is the minimum workload in order to form a valid schedule which covers all the such jobs. Therefore, these are the minimum and valid schedules that cover all jobs $i, i+1, \dots, n$
+
+$\Rightarrow F(i) \geq \min_{x \in C(i)} (w_x + F(\text{next}(x)))$
+
+Therefore $F(i) = \min_{x \in C(i)} (w_x + F(\text{next}(x)))$.
+
+\item[(d)] There exists $n$ subproblems and each subproblem takes $O(n)$ time. Therefore we have a time complexity of $O(n^2)$.
 \end{enumerate}
-Is this greedy algorithm correct? If so, explain why. If not, give a counterexample.
-\item[(b)] 10 points: Now consider the problem with arbitrary weights. Give a polynomial time algorithm for finding an optimal schedule $S$. Hint is available.
-\item[(c)] 10 points: Give a rigorous proof that the recurrence relation in your algorithm is correct.
-\item[(d)] 5 points: Analyze the runtime of your algorithm.
-\end{enumerate}
+
 \section*{Problem 4: Pok\'{e}mon Battle (25 points)}
-Acknowledgement: This problem is due to Andy Drucker:\\
 You are an up-and-coming Pok\'{e}mon trainer supervising a training battle. Your $n$ Pok\'{e}mon $p_1, \ldots , p_n$ are arranged in a line, in that order. At each time step, a single pair of adjacent Pok\'{e}mon fight. The winner stays in battle at the same position on the line; the loser ``faints'' and is removed. The battle ends when there is only a single Pok\'{e}mon left.
 
 As the trainer, you know for each pair $p_i, p_j$ which of the two Pok\'emon would win in a fight. This is recorded in the $(i,j)$-entry of a matrix $M$ which you can access. Still, there are many possible ways the battle could unfold, depending on which adjacent pair of Pok\'{e}mon fights next at each step.
