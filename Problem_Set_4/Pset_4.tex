@@ -229,8 +229,7 @@ Anthony Yoon, Michael Lee
     \end{enumerate}
 
 
-\item[(b)] Bellman-Ford will not terminate if we attempt to run it on the new graph due to the negative cycle of $f \rightarrow h \rightarrow h \rightarrow i \rightarrow f$. The algorithm will continue to traverse that cycle in an attempt to decrease the total weight of a path and since this process can continue infinity, the algorithm will not terminate.
-
+\item[(b)] Bellman-Ford requires no negative cycles. By changing the weight of $e= \{h,i\}$, we create a negative cycle of $f \rightarrow h \rightarrow h \rightarrow i \rightarrow f$. We cannot reliably use Bellman-Ford on this new graph. 
 
 \end{enumerate}
 
@@ -238,42 +237,40 @@ Anthony Yoon, Michael Lee
 \begin{enumerate}
 \item[(a)] We turn the problem into a graph traversal on a weighted directed graph, and look for the path with the largest happiness value, modeled as edge weights using a modified Bellman-Ford.
   \begin{enumerate}
-    \item[]$\textbf{Create graph}$ Start with all $n$ destinations as vertices, $v_i \st i \in \{1, \dots, n\}$, $x = L$ as the ending vertex, $v_{n+1}$, and $x = 0$ as the starting vertex, $v_0$. From each vertex, form directed edges, $e_{i, j}$, to all destinations within $300$ miles of itself without going backwards. Let the weight of those edges, $l_{j}$, represent the happiness value of the destination vertex with $l_{n+1} = 0$.
+    \item[]$\textbf{Create graph}$ Start with all $n$ destinations as vertices, $v_i \st i \in \{1, \dots, n\}$, $x = n + 1$ as the ending vertex, $v_{n+1}$, and $x = 0$ as the starting vertex, $v_0$. From each vertex, form directed edges, $e_{i, j}$, to all destinations within $300$ miles of itself without going backwards. Let the weight of those edges, $l_{j}$, represent the happiness value of the destination vertex with $l_{n+1} = 0$.
     
-    This is our graph $G(V, E)$ with $n+2$ vertices and $O(n^2)$ edges. There exists no cycles since once we pass a location, we cannot return to it.
+    This is our graph $G(V, E)$ with $n+2$ vertices and $O(n^2)$ edges. There exists no cycles since we cannot go backwards.
 
     \item[]$\textbf{Subproblem:}$ Let $d_k(i)$ be the maximal length of a walk from $v_0$ to $v_i$ using exactly $k$ edges. For each vertex $v_i \in V(G)$ what is $d_k(i)$?
     \item[]$\textbf{Recurrence Relation:}$ 
     \[d_0(0) = 0; ~d_0(i) = -\infty, ~\forall i \in \{1, \dots, n\}\]
-    \[d_k(i) = \max_{v_j \in V(G) \st e_{j,i} \in E(G)} \{d_{k-1}(j) + l_{i}\} \tor -\infty \text{ if the set is empty}\]
+    \[d_k(j) = \max_{v_i \in V(G) \st e_{i,j} \in E(G)} \{d_{k-1}(i) + l_{j}\} \tor -\infty \text{ if the set is empty}\]
+    Note that we negate edges that cannot be reached with exactly $k$ edges. 
 
-    \item[]$\textbf{Algorithm:}$ Use a modified Bellman-Ford algorithm with the recurrence relationship as dictated above in order to traverse the graph. 
+    \item[]$\textbf{Algorithm:}$ Use a modified Bellman-Ford algorithm with the recurrence relationship as dictated above in order to traverse the graph. We stop at exactly $k+1$ edges and recurse to find the best schedule from $x = 0$ to $x = n+1$ that include exactly $k+1$ edges.
 
   \end{enumerate}
 
-\item[(b)] We prove that the recurrence relation is correct by showing that it is a upper bound to the true solution for all vertices. Consider some vertex $v_i$ and some $k$.
+\item[(b)] Let $P$ be the an optimal walk from node $0$ to node $j$ using exactly $k$ edges. Let $i$ be some predecessor to $j$. Then the path from $0$ to $i$ has exactly $k-1$ edges and therefore has value $\leq d_{k-1}(i)$. Therefore, $P \leq d_{k-1}(i) + l_j$. 
 
-If there does not exist any vertices, $v_j$, that can be reached with exactly $k-1$ edges s.t. $e_{j,i} \in E(G)$, then there exists no walk to $v_i$ with exactly $k$ edges. Therefore $d_k(i) = -\infty$ as per our recurrence relation.
+$\Rightarrow P \leq \max_{v_i \in V(G) \st e_{i,j} \in E(G)} \{d_{k-1}(i) + l_{j}\}$
 
-If there exists at least one vertex, $v_j$, then $d_k(i) > -\infty$. The walk from $v_0$ to $v_j$ contains exactly $k-1$ edges. Adding $e_{j,i}$ to this creates a walk from $v_0$ to $v_i$ with exactly $k$ edges, therefore $d_k(i) \leq \max_{v_j \in V(G) \st e_{j,i} \in E(G)} \{d_{k-1}(j) + l_{i}\}$.
+Conversely, for any $i \in V(G) \st e = \{i, j\} \in E(G)$, we can find the optimal walking to achieve $d_{k-1}(i)$. We then append $l_j$ for a $k$ edge walk. All traversals to node $j$ using exactly $k$ edges must first arrive at some node $i$ using exactly $k-1$ edges and then go to node $j$ using one more edge.  Therefore $\{d_{k-1}(i) + l_{j}\}_{v_i \in V(G) \st e_{i,j} \in E(G)}$ gives us all the possible way to traverse to node $j$ using exactly $k$ edges. 
 
-Every walk from $v_0$ to $v_i$ must contain a $k-1$ edge walk from $v_0$ to some $v_j$ plus $e_{j,i}$. Otherwise it is unfeasible to reach $v_{i}$ with an $k$ edge walk.
+$\Rightarrow d_k(j) \geq \max_{v_i \in V(G) \st e_{i,j} \in E(G)} \{d_{k-1}(i) + l_{j}\}$
 
-\item[(c)] Creating the graph with $n+2$ nodes and iterating through to find valid edges requires $O(n^2)$ time. The modified Bellman-Ford requires $O(n^3)$ time. The entire algorithm is $O(n^3)$
+\item[(c)] Creating the graph with $n+2$ nodes and iterating through to find valid edges requires $O(n^2)$ time. The modified Bellman-Ford has $ (k+1) * (n+2)$ subproblems. Each subprobelm takes $O(n)$ solve time. Therefore the entire algorithm is $O(kn^2)$
 \end{enumerate}
 
 \section*{Problem 3: Lazy Interval Scheduling (30 points)}
 \begin{enumerate}
-\item[(a)] Incorrect Algorithm. Consider the following set of jobs sorted by start time:
+\item[(a)] Incorrect Algorithm. Consider the following set of jobs sorted by \textbf{start time}:
 \[ \{[0,2], [3,6], [4,8], [7,16], [9,11], [10,13], [12,14], [15,17]\} \]
-
-and end time:
-\[ \{[0,2], [3,6], [4,8], [9,11], [10,13], [12,14], [7,16], [15,17]\} \]
+and \textbf{end time}: $\{[0,2], [3,6], [4,8], [9,11], [10,13], [12,14], [7,16], [15,17]\}$
 
 By the greedy algorithm, we have the following algorithm progression:
     \begin{table}[h]
     \centering
-    \caption{Greedy}
     \begin{tabular}{|c|c|c|c|}
         \hline
         \textbf{S} & \textbf{t} & \textbf{$[a_i, b_i]$} & \textbf{Looking for $[a_i, b_i]$} \\
@@ -282,74 +279,79 @@ By the greedy algorithm, we have the following algorithm progression:
         \hline
         $\{[0,2]\}$ & $2$ & $[3,6]$ & $\msout{[0,2]}, \msout{[3,6]}, [4,8], [9,11], [10,13], [12,14], [7,16], [15,17]$\\
         \hline
-        $\{[0,3], [4,8]\}$ & $8$ & $[9,11]$ & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, [10,13], [12,14], [7,16], [15,17]$\\
+        $\{[0,2], [4,8]\}$ & $8$ & $[9,11]$ & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, [10,13], [12,14], [7,16], [15,17]$\\
         \hline
-        $\{[0,3], [4,8], [10,13]\}$ & $13$ & $[15, 17]$ & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, \msout{[10,13]}, \msout{[12,14]}, \msout{[7,16]}, \msout{[15,17]}$ \\
+        $\{[0,2], [4,8], [10,13]\}$ & $13$ & $[15, 17]$ & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, \msout{[10,13]}, \msout{[12,14]}, \msout{[7,16]}, \msout{[15,17]}$ \\
         \hline
-        $\{[0,3], [4,8], [10,13], [15, 17]\}$ & $17$ & DONE & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, \msout{[10,13]}, \msout{[12,14]}, \msout{[7,16]}, \msout{[15,17]}$ \\
+        $\{[0,2], [4,8], [10,13], [15, 17]\}$ & $17$ & DONE & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, \msout{[10,13]}, \msout{[12,14]}, \msout{[7,16]}, \msout{[15,17]}$ \\
         \hline
     \end{tabular}
     \end{table}
+    
     However, evidently the best schedule would be $S = \{[0,2], [3, 6], [7,16]\}$
 
 \item[(b)] We start with the array of all jobs, denoted $A$, sorted by start time.
-We define overlap as follows: two jobs $I=[a,b]$ and $J=[a',b']$ overlap iff $a<b'$ and $a'<b$.
+We define overlap as follows: two jobs $I=[a,b]$ and $J=[a',b']$ overlap iff $a<b'$ or $a'<b$.
 
 \begin{algorithm}[H]
-\caption{Minimize total weight of an excusing schedule}
 \begin{lstlisting}
-Minimize(i):    ##i is an index; we recurse on A[i:]
-    if i == n: return 0
+Minimize(i):    #i is an index; we recurse on A[i:]
+    if i > n-1: return 0
 
-    Jobs = A[i..n-1]
+    Jobs = A[i:]
     J = min{job in Jobs: key=job.end}
-
-    Candidates = {X in Jobs : X overlaps J}
+    Candidates = {job in Jobs : job overlaps J}
     
-    best = +infinity
-    for X in Candidates:
-        ##A is sorted by start time
-        k = first index >= i such that A[k].start >= X.end
-        best = min(best, w(X) + Minimize(k))
+    best = +infty
+    for c in Candidates:    #A is sorted by start time
+      k = first index such that A[k].start >= c.end
+      best = min(best, w(c) + Minimize(k))
     
-        return best
+    return best
 \end{lstlisting}
 \end{algorithm}
-We compute $\texttt{Minimize}(0)$. With memoization, each suffix index $i$ is evaluated once, so there are $O(n)$ subproblems: $\text{Minimize}(0), \text{Minimize}(1),\dots, \text{Minimize}(n-1)$.
 
-\textbf{Recurrence Relation:}
+\textbf{Subproblem:} For each index $i$, what is $\texttt{Minimize}(i)$? we aim to compute $\texttt{Minimize}(0)$. We start with $i=n-1$ and decrement $i$ until $i=0$. Utilizing memoization, each suffix index $i$ is evaluated at most once, so there are $O(n)$ subproblems. 
 
-Assume jobs are indexed 1..n and sorted by start time.
-Job $i$ is represented by interval $[a_i,b_i]$ and weight $w_i$.
+\textbf{Recurrence Relation}
 
-Let $F(i)$ denote the minimum total work needed to produce a valid schedule using only jobs $i,i+1,\dots,n$.
+Assume array of jobs $A$ are sorted by start time, indexed $0, 1, \dots, n-1$. Job $i$ is represented by interval $[a_i,b_i]$ and weight $w(i)$.
 
-Let $J(i)$ be the index of the job in $\{i,\dots,n\}$
-with the earliest end time:
-\[ J(i) = \min_{k \in \{i,\dots,n\}} \{b_k\}\]
+Let $F(i)$ denote the minimum total work needed to produce a valid schedule only considering jobs $i,i+1,\dots, n-1 $.
+
+Let $J(i)$ be the index of the job in $\{i,\dots,n-1\}$ with the earliest end time:
+\[ J(i) = \min_{k \in \{i,\dots,n-1\}} \{b_k\}\]
 
 Let $C(i)$ be the set of jobs that overlap $J(i)$:
-\[C(i) = \{\, x \in \{i,\dots,n\}:(a_x,b_x)\cap(a_{J(i)},b_{J(i)}) \neq \emptyset \,\}\]
+\[C(i) = \{\, x \in \{i,\dots,n-1\}|[a_x,b_x)\cap [a_{J(i)},b_{J(i)}) \neq \emptyset \,\}\]
 
-For any chosen job $x$, let $\text{next}(x)$ be the index of the first job whose start time is at least $b_x$, assume $a_{n+1} = +\infty$.:
-\[\text{next}(x) \;=\; \min\{\, t \in \{i,\dots,n+1\} \;:\; a_t \ge b_x \,\}\]
+For any chosen job $x$, let $\text{next}(x)$ be the index of the first job whose start time is at least $b_x$, assume $a_{n} = +\infty$:
+\[\text{next}(x) = \min\{\, t \in \{i,\dots,n-1\} | a_t \ge b_x \,\}\]
 
-\textbf{Base Case:} $F(n+1) = 0$
+$\quad$ \underline{Base Case:} $F(n) = 0$
 
-\textbf{Recurrence Relation:} $F(i) = \min_{x \in C(i)} ( w_x + F(\text{next}(x)))$
+$\quad$  \underline{Recurrence Relation:} $F(i) = \min_{x \in C(i)} ( w_x + F(\text{next}(x)))$
+$\nextline$
+
+\textbf{Algorithm}
+
+Once we calculate  $\texttt{Minimize}(0)$, we backtrack to find the optimal schedule, follwing which job within $C(x)$ gives us the minimum $F(x) = w_x + F(next(x))$. 
+$\nextline$
 
 
 \item[(c)] We will prove that this recurrence relation is correct by showing 
 \[F(i) = \min_{x \in C(i)} (w_x + F(\text{next}(x)))\]
 
-$F(i)$ is the minimum total work needed to produce a valid schedule using jobs $i,i+1,\dots,n$. $\forall [a_i, b_i] \in C(j), ~a_i < b_{J(i)} \tand b_i \geq b_{J(i)}$, therefore $b_{J(i)} \in [a_i, b_i], ~\forall [a_i, b_i] \in C(j)$ and so they all overlap each other. $\forall [a_i, b_i] \in C(j)$, there exists a minimum workload to fill up the time not covered by $[a_i, b_i]$. By definition this is $F(next(x))$. Adding $[a_i, b_i]$ to the schedule covers the entire interval. Therefore, $min_{x \in C(i)} (w_x + F(\text{next}(x)))$ produces a valid schedule and $F(i)$ is the the minimum total work to produce a valid schedule.
+$F(i)$ is the minimum total work needed to produce a valid schedule using jobs $i,i+1,\dots,n$. $\forall [a_i, b_i] \in C(j), ~a_i < b_{J(i)} \text{ (job $i$ must overlap with job $J(i)$) }\tand b_i > b_{J(i)}$ ($J(i)$ is the job which ends earliest). Therefore $b_{J(i)} - 1 \in [a_i, b_i], ~\forall [a_i, b_i] \in C(j)$ and so all jobs in $C(i)$ overlap each other. We only need to pick one.
+
+By definition, $F(next(x))$ is the minimum workload needed to fill up the time not covered by $[a_i, b_i], ~\forall [a_i, b_i] \in C(j)$. Adding $[a_i, b_i]$ to the schedule determined by backtracking the formation of $F(next(x))$ covers all jobs $i, \dots, n-1$. Therefore, $\{w(x) + F(\text{next}(x))\}_{x \in C(i)}$ produces valid schedules and since $F(i)$ is the the minimum total work to produce a valid schedule...
 
 $\Rightarrow F(i) \leq \min_{x \in C(i)} (w_x + F(\text{next}(x))) \nextline$
 
 
-We claim that $w_x + F(\text{next}(x)), ~\forall x \in C(i)$ are the only ways to form valid schedules. 
+We claim that $w_x + F(\text{next}(x)), ~\forall x \in C(i)$ are the only ways to form valid schedules when considering jobs $i, \dots, n-1$ 
 
-We must take a job in $C(i)$, otherwise $J(i)$ is open for the taking and therefore whatever schedule we come up with is invalid. And by definition, $\text{next}(x)$ is the set of available jobs open for the taking and $F(\text{next}(x))$ is the minimum workload in order to form a valid schedule which covers all the such jobs. Therefore, these are the minimum and valid schedules that cover all jobs $i, i+1, \dots, n$
+We must take a job in $C(i)$, otherwise we have no excuse for not taking job $J(i)$ and we will have to take job $J(i) \in C(i)$ regardless. By definition, $\text{next}(x)$ is the set of jobs not covered by our first choice and $F(\text{next}(x))$ is the minimum workload in order to form a valid schedule which covers all the such jobs. Therefore, these are the minimal valid schedules that cover all jobs $i, i+1, \dots, n-1$
 
 $\Rightarrow F(i) \geq \min_{x \in C(i)} (w_x + F(\text{next}(x)))$
 
@@ -360,41 +362,29 @@ Therefore $F(i) = \min_{x \in C(i)} (w_x + F(\text{next}(x)))$.
 
 \section*{Problem 4: Pok\'{e}mon Battle (25 points)}
 
- You are an up-and-coming Pok\'{e}mon trainer supervising a training battle. Your $n$ Pok\'{e}mon $p_1, \ldots , p_n$ are arranged in a line, in that order. At each time step, a single pair of adjacent Pok\'{e}mon fight. The winner stays in battle at the same position on the line; the loser ``faints'' and is removed. The battle ends when there is only a single Pok\'{e}mon left.
-
-As the trainer, you know for each pair $p_i, p_j$ which of the two Pok\'emon would win in a fight. This is recorded in the $(i,j)$-entry of a matrix $M$ which you can access. Still, there are many possible ways the battle could unfold, depending on which adjacent pair of Pok\'{e}mon fights next at each step.
-
-\begin{example}
-A special case of this problem is as follows. There are water Pok\'{e}mon, fire Pok\'{e}mon, and grass Pok\'{e}mon and each Pok\'{e}mon has a level. Water Pok\'{e}mon defeat all fire Pok\'{e}mon as well as water Pok\'{e}mon of lower level. Fire Pok\'{e}mon defeat all grass Pok\'{e}mon as well as fire Pok\'{e}mon of lower level. Grass Pok\'{e}mon defeat all water Pok\'{e}mon as well as grass Pok\'{e}mon of lower level.
-
-If the lineup is $W1,F1,G1$ (where $F$, $W$, and $G$ stand for fire, water, and grass respectively and the number gives the level) then the $W1$ and $G1$ Pok\'{e}mon can win but the $F1$ Pok\'{e}mon cannot win. To see this, observe that
 \begin{enumerate}
-\item If we first have $F1$ and $G1$ fight then $F1$ will win. $W1$ will then fight $F1$ and win.
-\item If we first have $W1$ and $F1$ fight then $W1$ will win. $G1$ will then fight $W1$ and win.
+\item[(a)] Let $A$ represent the array of Pok\'{e}mon. For convince, we will use a 1-based index. The Pok\'{e}mon are arranged as specified by the problem such that $A[i] = p_i$.
+
+\textbf{Subproblem:} Who are the possible winners given an interval length of $k$? Let $d_k(i, j)$ represent the set of possible winners between indicies $i$ and $j$ s.t. $i < j \tand j - i + 1= k$. 
+
+\textbf{Algorithm}
+\begin{enumerate}
+  \item[1)] We start with $k = 1$ and increment until $k = n$.
+  \item[2)] Consider some $k$, we iterate through $A$ and create pairings $(i, j)$ s.t. $j - i + 1 = k$. To create unique intervals, it is sufficent to start from some $i$ and set $j = i + k - 1$. We stop creating intervals once the prospective $j > n$ or in other words, $i = n - k + 2$.
+  \item[3)]To determine the set of possible winners $d_k(i_o, j_)$, we consider sets $d_{k-1}(i, j)$ s.t. $i \geq i_o \tand j \leq j_o$. Note that there exists exactly two such sets since $k$ is only $1$ larger than $k-1$ so our options are $d_{k-1}(i_o, j-1)$ and $d_{k-1}(i_o + 1, j_o)$.
+  \item[] 
+
 \end{enumerate}
 
-If we instead have the lineup $G2,F1,W1,G1$ then every Pok\'{e}mon except $W1$ can win. To see this, observe that 
-\begin{enumerate}
-\item If we first have $F1$ and $W1$ fight then $W1$ will win. $W1$ will then fight $G1$ or $G2$ and lose. $G2$ will then fight $G1$ and win.
-\item If we first have $W1$ and $G1$ fight then $G1$ will win. $F1$ will then fight $G1$ and $G2$ (in either order) and win both fights.
-\item If we first have $G2$ and $F1$ fight then $F1$ will win. If we then have $W1$ and $F1$ fight then $W1$ will win. $G1$ will then fight $W1$ and win.
-\item $W1$ cannot win the battle as if $W1$ is not defeated by $G2$ then $W1$ will have to fight $G1$.
-\end{enumerate}
-\end{example}
-\begin{enumerate}
-\item[(a)] 10 points: Give a polynomial time algorithm that outputs a list of all possible winners of the battle. Hint is available.
+\textbf{Recurrence Relation}
+\[d_1(i, j) = A[i] = A[j] \text{ (in this case $i$ must be equal to $j$) }\]
+\[d_k(i, j) = {}\]
+
+
+
 \item[(b)] 10 points: Explain why your algorithm is correct. You do not need to give a rigorous proof.
 \item[(c)] 5 points: Analyze the runtime of your algorithm.
 \end{enumerate}
-\newpage
-\section*{Hints}
-\noindent 3a. It may help to find a set of jobs such that you must take at least one job from this set and then determine the best you can do by taking each job in this set. Remember to specify the order for solving the subproblems.\\
-\\
-4a. You should solve the following subproblems. For each interval $[l,r]$, which Pok\'{e}mon could win the battle between Pok\'{e}mon $p_l,\ldots,p_r$? Remember to specify the order for solving the subproblems.
-
-\end{document}
-
-
 
 
 \end{document}
