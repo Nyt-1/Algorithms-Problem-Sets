@@ -360,8 +360,9 @@ Therefore $F(i) = \min_{x \in C(i)} (w_x + F(\text{next}(x)))$.
 \item[(d)] There exists $n$ subproblems and each subproblem takes $O(n)$ time. Therefore we have a time complexity of $O(n^2)$.
 \end{enumerate}
 
-\section*{Problem 4: Pok\'{e}mon Battle (25 points)}
 
+
+\section*{Problem 4: Pok\'{e}mon Battle (25 points)}
 \begin{enumerate}
 \item[(a)] Let $A$ represent the array of Pok\'{e}mon. For convince, we will use a 1-based index. The Pok\'{e}mon are arranged as specified by the problem such that $A[i] = p_i$.
 
@@ -374,18 +375,21 @@ Therefore $F(i) = \min_{x \in C(i)} (w_x + F(\text{next}(x)))$.
   \item[3)] To determine the set of possible winners $d_k(i_o, j_o)$, we consider sets $d_{k-1}(i, j)$ s.t. $i \geq i_o \tand j \leq j_o$. Note that there exists exactly two such sets since $k$ is only $1$ larger than $k-1$. Our options are $d_{k-1}(i_o, j_o-1)$ and $d_{k-1}(i_o + 1, j_o)$.
   \item[4)] Create an empty set $d_k(i_o, j_o)$.
   \item[5)] For each possible winner in $d_{k-1}(i_o, j_o-1)$, let it battle with $p_{j_o},$ and append the winners to $d_k(i_o, j_o)$.
-  \item[6)] For each possible winner in $d_{k-1}(i_o + 1, j_o)$, let it battle with $p_{j_o},$ and append the winners to $d_k(i_o, j_o)$.
+  \item[6)] For each possible winner in $d_{k-1}(i_o + 1, j_o)$, let it battle with $p_{i_o},$ and append the winners to $d_k(i_o, j_o)$.
   \item[7)] Return $d_{n}(1, n)$
 \end{enumerate}
 
-\textbf{Recurrence Relation} Let the function \textit{winner} stimulate a battle between two Pok\'{e}mon and return the winner as per the rules outlined in the problem. 
+\textbf{Recurrence Relation} Let the function \textit{winner} stimulate a battle between two Pok\'{e}mon and return the winner as per the rules outlined in the problem. Order does not matter.
 \[d_1(i, j) = A[i] = A[j] \text{ (in this case $i$ must be equal to $j$) }\]
-\[d_k(i, j) = \{\textit{winner}(p_i, x)|~x \in d_k(i+1, j)\} \cup \{\textit{winner}(p_j, x)|~x \in d_k(i, j-1)\}\]
+\[d_k(i, j) = \{\textit{winner}(p_i, x)|~x \in d_{k-1}(i+1, j)\} \cup \{\textit{winner}(p_j, x)|~x \in d_{k-1}(i, j-1)\}\]
 
 
+\item[(b)] We claim that at each step, we find all the possible winners of the interval $[i, j]$. For $p_i \tor p_j$, it can either battle last, or it does not battle last. We consider the case when it battles last when we consider 
 
-\item[(b)] 10 points: Explain why your algorithm is correct. You do not need to give a rigorous proof.
-\item[(c)] $O(n^4)$
+
+\item[(c)] There exists $\sum_{i = 1}^{n}i$ subproblems which is $O(n^2)$. Each subproblem requires us to iterate over 2 sets, either of which have at most $n$ elements, giving a solve time of $O(n)$.
+
+$\Rightarrow$ The proposed algorithm is $O(n^3)$
 \end{enumerate}
 
 
