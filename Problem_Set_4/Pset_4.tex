@@ -370,20 +370,22 @@ Therefore $F(i) = \min_{x \in C(i)} (w_x + F(\text{next}(x)))$.
 \textbf{Algorithm}
 \begin{enumerate}
   \item[1)] We start with $k = 1$ and increment until $k = n$.
-  \item[2)] Consider some $k$, we iterate through $A$ and create pairings $(i, j)$ s.t. $j - i + 1 = k$. To create unique intervals, it is sufficent to start from some $i$ and set $j = i + k - 1$. We stop creating intervals once the prospective $j > n$ or in other words, $i = n - k + 2$.
-  \item[3)]To determine the set of possible winners $d_k(i_o, j_)$, we consider sets $d_{k-1}(i, j)$ s.t. $i \geq i_o \tand j \leq j_o$. Note that there exists exactly two such sets since $k$ is only $1$ larger than $k-1$ so our options are $d_{k-1}(i_o, j-1)$ and $d_{k-1}(i_o + 1, j_o)$.
-  \item[] 
-
+  \item[2)] Consider some $k$, we iterate through $A$ and create pairings $(i, j)$ s.t. $j - i + 1 = k$. To create unique intervals, it is sufficent to start from any $i$, starting from $i = 1$ and setting $j = i + k - 1$. We stop creating intervals after the prospective $j = n$ or in other words, $i = n - k + 1$ is the last interval we create.
+  \item[3)] To determine the set of possible winners $d_k(i_o, j_o)$, we consider sets $d_{k-1}(i, j)$ s.t. $i \geq i_o \tand j \leq j_o$. Note that there exists exactly two such sets since $k$ is only $1$ larger than $k-1$. Our options are $d_{k-1}(i_o, j_o-1)$ and $d_{k-1}(i_o + 1, j_o)$.
+  \item[4)] Create an empty set $d_k(i_o, j_o)$.
+  \item[5)] For each possible winner in $d_{k-1}(i_o, j_o-1)$, let it battle with $p_{j_o},$ and append the winners to $d_k(i_o, j_o)$.
+  \item[6)] For each possible winner in $d_{k-1}(i_o + 1, j_o)$, let it battle with $p_{j_o},$ and append the winners to $d_k(i_o, j_o)$.
+  \item[7)] Return $d_{n}(1, n)$
 \end{enumerate}
 
-\textbf{Recurrence Relation}
+\textbf{Recurrence Relation} Let the function \textit{winner} stimulate a battle between two Pok\'{e}mon and return the winner as per the rules outlined in the problem. 
 \[d_1(i, j) = A[i] = A[j] \text{ (in this case $i$ must be equal to $j$) }\]
-\[d_k(i, j) = {}\]
+\[d_k(i, j) = \{\textit{winner}(p_i, x)|~x \in d_k(i+1, j)\} \cup \{\textit{winner}(p_j, x)|~x \in d_k(i, j-1)\}\]
 
 
 
 \item[(b)] 10 points: Explain why your algorithm is correct. You do not need to give a rigorous proof.
-\item[(c)] 5 points: Analyze the runtime of your algorithm.
+\item[(c)] $O(n^4)$
 \end{enumerate}
 
 
