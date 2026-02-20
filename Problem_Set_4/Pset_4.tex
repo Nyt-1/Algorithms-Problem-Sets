@@ -13,6 +13,14 @@
 \usepackage{fullpage}
 \usepackage{times}
 \usepackage{mathdots}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\newenvironment{pseudocode}{
+\begin{quote}
+\ttfamily
+}{
+\end{quote}
+}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
@@ -102,6 +110,11 @@
 \newcommand{\fP}{\mathbb{P}}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\msout}[1]{\text{\sout{\ensuremath{#1}}}}
+\newcommand{\I}{\hspace*{2em}}      % 1 indent level
+\newcommand{\II}{\hspace*{4em}}    % 2 indent levels
+\newcommand{\III}{\hspace*{6em}}   % 3 indent levels
+\newcommand{\IV}{\hspace*{8em}}   % 3 indent levels
+\newcommand{\V}{\hspace*{10em}}   % 3 indent levels
 
 
 
@@ -364,33 +377,75 @@ Therefore $F(i) = \min_{x \in C(i)} (w_x + F(\text{next}(x)))$.
 
 \section*{Problem 4: Pok\'{e}mon Battle (25 points)}
 \begin{enumerate}
-\item[(a)] Let $A$ represent the array of Pok\'{e}mon. For convince, we will use a 1-based index. The Pok\'{e}mon are arranged as specified by the problem such that $A[i] = p_i$.
+\item[(a)] We follow the hint and use interval dynamic programming. For any interval
+$[\ell,r]$ with $1 \le \ell \le r \le n$, let $W[\ell][r]$ denote the set of Pok\'emon that can
+end up as the final winner if we run the battle using only the contiguous block
+$p_\ell, p_{\ell+1}, \dots, p_r$. We store these sets in an $n \times n$ table $W$.
+(Entries with $\ell > r$ are unused and may be treated as $\emptyset$.) The answer to
+the problem is the set $W[1][n]$.
 
-\textbf{Subproblem:} Who are the possible winners given an interval length of $k$? Let $d_k(i, j)$ represent the set of possible winners between indicies $i$ and $j$ s.t. $i < j \tand j - i + 1= k$. 
+For the base case, if $\ell=r$ then there is only one Pok\'emon, so
+\[
+W[\ell][\ell] = \{p_\ell\}.
+\]
 
-\textbf{Algorithm}
-\begin{enumerate}
-  \item[1)] We start with $k = 1$ and increment until $k = n$.
-  \item[2)] Consider some $k$, we iterate through $A$ and create pairings $(i, j)$ s.t. $j - i + 1 = k$. To create unique intervals, it is sufficent to start from any $i$, starting from $i = 1$ and setting $j = i + k - 1$. We stop creating intervals after the prospective $j = n$ or in other words, $i = n - k + 1$ is the last interval we create.
-  \item[3)] To determine the set of possible winners $d_k(i_o, j_o)$, we consider sets $d_{k-1}(i, j)$ s.t. $i \geq i_o \tand j \leq j_o$. Note that there exists exactly two such sets since $k$ is only $1$ larger than $k-1$. Our options are $d_{k-1}(i_o, j_o-1)$ and $d_{k-1}(i_o + 1, j_o)$.
-  \item[4)] Create an empty set $d_k(i_o, j_o)$.
-  \item[5)] For each possible winner in $d_{k-1}(i_o, j_o-1)$, let it battle with $p_{j_o},$ and append the winners to $d_k(i_o, j_o)$.
-  \item[6)] For each possible winner in $d_{k-1}(i_o + 1, j_o)$, let it battle with $p_{i_o},$ and append the winners to $d_k(i_o, j_o)$.
-  \item[7)] Return $d_{n}(1, n)$
+To fill the upper-triangular portion of the table, we process intervals in increasing
+order of length. Concretely, for each interval length $\mathrm{len}=r-\ell$ from $1$ up to $n-1$,
+we compute $W[\ell][r]$ for all $\ell$ with $r=\ell+\mathrm{len}$ by considering all split points
+$m$ with $\ell \le m < r$. For each split, the left block $[\ell,m]$ can reduce to any
+$a \in W[\ell][m]$, and the right block $[m+1,r]$ can reduce to any
+$b \in W[m+1][r]$; if $a$ and $b$ are the two remaining adjacent survivors, then the
+winner of their final battle is $M[a][b]$. We take the union over all such possibilities.
+
+\begin{pseudocode}
+    For $1 \le \mathrm{interval} \le n-1$:\\
+    \I For $1 \le \ell \le n - \mathrm{interval}$: \\
+    \II Take $r := \ell + \mathrm{interval}$. Initialize $W[\ell][r] = \emptyset.$\\
+    \II For $\ell \le m < r$: \\
+    \III For $a \in W[\ell][m]$:\\
+    \IV For $b \in W[m+1][r]$:\\
+    \V We add $M[a][b]$ to $W[\ell][r]$.
+\end{pseudocode}
+
+
+
+
+\item[(b)] We claim that for all $\ell \le r$,
+\[
+W[\ell][r] \;=\; \bigcup_{m=\ell}^{r-1} \{\, M[a][b] \mid a \in W[\ell][m],\ b \in W[m+1][r] \,\}.
+\]
+We prove both inclusions.
+
+\smallskip
+($\subseteq$) Consider any battle sequence on the block $p_\ell,\dots,p_r$, and look at the
+\emph{final} battle in that sequence. Immediately before the final battle, exactly two
+adjacent Pok\'emon remain; call them $a$ (on the left) and $b$ (on the right). Because
+battles occur only between adjacent Pok\'emon, the Pok\'emon that eventually faint to
+produce $a$ form a contiguous sub-block $[\ell,m]$, and the Pok\'emon that eventually
+faint to produce $b$ form the remaining contiguous sub-block $[m+1,r]$, for some
+$m \in \{\ell,\dots,r-1\}$. Thus $a$ is a possible winner of the left sub-block, so
+$a \in W[\ell][m]$, and similarly $b \in W[m+1][r]$. The overall winner of the final
+battle is therefore $M[a][b]$, which shows the winner of the full interval lies in the
+right-hand side.
+
+\smallskip
+($\supseteq$) Conversely, fix any split point $m \in \{\ell,\dots,r-1\}$ and choose any
+$a \in W[\ell][m]$ and $b \in W[m+1][r]$. By definition of $W[\ell][m]$ and $W[m+1][r]$,
+there exist battle sequences that reduce the left block $p_\ell,\dots,p_m$ to $a$ and
+the right block $p_{m+1},\dots,p_r$ to $b$. Since these battles involve disjoint sets of
+Pok\'emon, we can perform them independently, leaving $a$ and $b$ adjacent. Having $a$
+and $b$ fight then produces winner $M[a][b]$, so $M[a][b] \in W[\ell][r]$. Taking the
+union over all $m$ proves the inclusion.
+
+Therefore the recurrence computes exactly the set of possible winners for every interval,
+and in particular $W[1][n]$ is the set of all possible winners of the full lineup.
+
+\item[(c)] There are $\Theta(n^2)$ intervals $[\ell,r]$. For each interval we consider
+$\Theta(n)$ split points $m$, and for each split we may pair up to
+$|W[\ell][m]| \cdot |W[m+1][r]| \le n \cdot n = O(n^2)$ candidates. Each inner operation
+computes $M[a][b]$ and inserts it into a set in $O(1)$ time. Hence the total running time
+is $O(n^2 \cdot n \cdot n^2) = O(n^5)$.
+
 \end{enumerate}
-
-\textbf{Recurrence Relation} Let the function \textit{winner} stimulate a battle between two Pok\'{e}mon and return the winner as per the rules outlined in the problem. Order does not matter.
-\[d_1(i, j) = A[i] = A[j] \text{ (in this case $i$ must be equal to $j$) }\]
-\[d_k(i, j) = \{\textit{winner}(p_i, x)|~x \in d_{k-1}(i+1, j)\} \cup \{\textit{winner}(p_j, x)|~x \in d_{k-1}(i, j-1)\}\]
-
-
-\item[(b)] We claim that at each step, we find all the possible winners of the interval $[i, j]$. For $p_i \tor p_j$, it can either battle last, or it does not battle last. We consider the case when it battles last when we consider 
-
-
-\item[(c)] There exists $\sum_{i = 1}^{n}i$ subproblems which is $O(n^2)$. Each subproblem requires us to iterate over 2 sets, either of which have at most $n$ elements, giving a solve time of $O(n)$.
-
-$\Rightarrow$ The proposed algorithm is $O(n^3)$
-\end{enumerate}
-
 
 \end{document}
