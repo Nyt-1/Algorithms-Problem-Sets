@@ -13,6 +13,14 @@
 \usepackage{fullpage}
 \usepackage{times}
 \usepackage{mathdots}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\newenvironment{pseudocode}{
+\begin{quote}
+\ttfamily
+}{
+\end{quote}
+}
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
@@ -22,6 +30,7 @@
 \newtheorem{example}[theorem]{Example}
 \newtheorem{remark}[theorem]{Remark}
 \usetikzlibrary{arrows.meta, automata, positioning}
+\usepackage[normalem]{ulem}
 
 \usepackage{listings}
 \usepackage{xcolor}
@@ -93,13 +102,20 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Q}{\mathbb{Q}}
-\newcommand{\Z}{\mathbf{Z}}
-\newcommand{\st}{\text{ s.t }}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\st}{\text{ s.t. }}
 \newcommand{\tand}{\text{ and }}
 \newcommand{\tor}{\text{ or }}
 \newcommand{\bigO}[1]{\mathcal{O}\left(#1\right)}
 \newcommand{\fP}{\mathbb{P}}
 \newcommand{\E}{\mathbb{E}}
+\newcommand{\msout}[1]{\text{\sout{\ensuremath{#1}}}}
+\newcommand{\I}{\hspace*{2em}}      % 1 indent level
+\newcommand{\II}{\hspace*{4em}}    % 2 indent levels
+\newcommand{\III}{\hspace*{6em}}   % 3 indent levels
+\newcommand{\IV}{\hspace*{8em}}   % 3 indent levels
+\newcommand{\V}{\hspace*{10em}}   % 3 indent levels
+
 
 
 \usepackage{listings}
