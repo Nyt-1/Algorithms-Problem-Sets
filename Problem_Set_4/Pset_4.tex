@@ -281,30 +281,17 @@ $\Rightarrow d_k(j) \geq \max_{v_i \in V(G) \st e_{i,j} \in E(G)} \{d_{k-1}(i) +
 \[ \{[0,2], [3,6], [4,8], [7,16], [9,11], [10,13], [12,14], [15,17]\} \]
 and \textbf{end time}: $\{[0,2], [3,6], [4,8], [9,11], [10,13], [12,14], [7,16], [15,17]\}$
 
-By the greedy algorithm, we have the following algorithm progression:
-    \begin{table}[h]
-    \centering
-    \begin{tabular}{|c|c|c|c|}
-        \hline
-        \textbf{S} & \textbf{t} & \textbf{$[a_i, b_i]$} & \textbf{Looking for $[a_i, b_i]$} \\
-        \hline
-        $\{\}$ & $0$ & $[0,2]$ & $\msout{[0,2]}, [3,6], [4,8], [9,11], [10,13], [12,14], [7,16], [15,17]$\\
-        \hline
-        $\{[0,2]\}$ & $2$ & $[3,6]$ & $\msout{[0,2]}, \msout{[3,6]}, [4,8], [9,11], [10,13], [12,14], [7,16], [15,17]$\\
-        \hline
-        $\{[0,2], [4,8]\}$ & $8$ & $[9,11]$ & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, [10,13], [12,14], [7,16], [15,17]$\\
-        \hline
-        $\{[0,2], [4,8], [10,13]\}$ & $13$ & $[15, 17]$ & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, \msout{[10,13]}, \msout{[12,14]}, \msout{[7,16]}, \msout{[15,17]}$ \\
-        \hline
-        $\{[0,2], [4,8], [10,13], [15, 17]\}$ & $17$ & DONE & $\msout{[0,2]}, \msout{[3,6]}, \msout{[4,8]}, \msout{[9,11]}, \msout{[10,13]}, \msout{[12,14]}, \msout{[7,16]}, \msout{[15,17]}$ \\
-        \hline
-    \end{tabular}
-    \end{table}
+\begin{itemize}
+    \item $t = 0:$ $[0,2]$ has first end time after, take $[0,2]$,
+    \item $t = 2:$ ,$[3,6]$ has first end time after, take $[4, 8]$.
+    \item $t = 8:$ $[9, 11]$ has first end time after, take $[10, 13]$,
+    \item $t = 13$: $[15, 17]$ has first end time after, take $[15, 17]$.
+\end{itemize}
     
-    However, evidently the best schedule would be $S = \{[0,2], [3, 6], [7,16]\}$
+However, evidently the best schedule would be $S = \{[0,2], [3, 6], [7,16]\}$
 
 \item[(b)] We start with the array of all jobs, denoted $A$, sorted by start time.
-We define overlap as follows: two jobs $I=[a,b]$ and $J=[a',b']$ overlap iff $a<b'$ or $a'<b$.
+We define overlap as follows: two jobs $I=[a,b]$ and $J=[a',b']$ overlap iff $a<b'$ and $a'<b$.
 
 \begin{algorithm}[H]
 \begin{lstlisting}
@@ -317,29 +304,37 @@ Minimize(i):    #i is an index; we recurse on A[i:]
     
     best = +infty
     for c in Candidates:    #A is sorted by start time
-      k = first index such that A[k].start >= c.end
+      k = first index such that A[k].start > c.end
       best = min(best, w(c) + Minimize(k))
     
     return best
 \end{lstlisting}
 \end{algorithm}
 
-\textbf{Subproblem:} For each index $i$, what is $\texttt{Minimize}(i)$? we aim to compute $\texttt{Minimize}(0)$. We start with $i=n-1$ and decrement $i$ until $i=0$. Utilizing memoization, each suffix index $i$ is evaluated at most once, so there are $O(n)$ subproblems. 
+\textbf{Subproblem:} For each index $i$, what is $\texttt{Minimize}(i)$? we aim to compute $\texttt{Minimize}(0)$ which minimizes $A[0:]$, i.e. the entire array of jobs. Utilizing memoization, each suffix index $i$ is evaluated at most once, so there are $O(n)$ subproblems. 
 
 \textbf{Recurrence Relation}
 
-Assume array of jobs $A$ are sorted by start time, indexed $0, 1, \dots, n-1$. Job $i$ is represented by interval $[a_i,b_i]$ and weight $w(i)$.
+As stated before, the array of jobs $A$ are sorted by start time, indexed $0, 1, \dots, n-1$. Job $i$ is represented by interval $[a_i,b_i]$ and weight $w(i)$.
 
-Let $F(i)$ denote the minimum total work needed to produce a valid schedule only considering jobs $i,i+1,\dots, n-1 $.
+Let $F(i)$ denote the minimum total work needed to produce a valid schedule when only considering jobs $i,i+1,\dots, n-1 $.
 
-Let $J(i)$ be the index of the job in $\{i,\dots,n-1\}$ with the earliest end time:
+Let $J(i)$ be the index of the job in $\{i,\dots,n-1\}$ with the earliest end time when only considering jobs $i,i+1,\dots, n-1 $:
 \[ J(i) = \min_{k \in \{i,\dots,n-1\}} \{b_k\}\]
 
-Let $C(i)$ be the set of jobs that overlap $J(i)$:
-\[C(i) = \{\, x \in \{i,\dots,n-1\}|[a_x,b_x)\cap [a_{J(i)},b_{J(i)}) \neq \emptyset \,\}\]
+Let $C(i)$ be the set of jobs that overlap $J(i)$ when only considering jobs $i,i+1,\dots, n-1 $:
+\[C(i) = \{\, x \in \{i,\dots,n-1\}|(a_x,b_x)\cap (a_{J(i)},b_{J(i)}) \neq \emptyset \,\}\]
 
-For any chosen job $x$, let $\text{next}(x)$ be the index of the first job whose start time is at least $b_x$, assume $a_{n} = +\infty$:
-\[\text{next}(x) = \min\{\, t \in \{i,\dots,n-1\} | a_t \ge b_x \,\}\]
+$\forall~ (a_i, b_i) \in C(j), ~ b_i > b_{J(i)} > a_{J(i)}$ becuase $J(i)$ is the job which ends earliest by definition. Additionally, becuase job $i$ overlaps with job $J(i)$, by definiton of overlap, $a_i < b_{J(i)}$ as well. Therefore $b_{J(i)} - \epsilon \in (a_i, b_i), ~\forall (a_i, b_i) \in C(j)$ and so all jobs in $C(i)$ overlap each other at $b_{J(i)} - \epsilon$. We only need to pick one in order to cover all the jobs in this collection
+
+For any chosen job $x$, let $\text{next}(x)$ be the index of the first job whose start time is greater than $b_x$ (Array $A$ is ordered), assume $a_{n} = +\infty$:
+\[\text{next}(x) = \min\{\, t \in \{i,\dots,n-1\} | a_t > b_x \,\}\]
+
+We claim that all jobs with incides less than $\text{next}(x)$ overlap with $(a_x, b_x)$. Let $(a_y, b_y)$ be some job s.t. $y < \text{next}(x)$, then by defintion $a_y < b_x$.
+
+If $b_y > b_x$, then $b_y > a_x$ and by defintion they overlap.
+
+If $b_y < b_x$. Then $b_y > b_{J(i)}$ by definition of job $J(i)$ and since $a_x < b_{J(i)}$ by definition of being in $C(i)$, then $b_y > a_x$ and by defintion they overlap.
 
 $\quad$ \underline{Base Case:} $F(n) = 0$
 
@@ -355,7 +350,7 @@ $\nextline$
 \item[(c)] We will prove that this recurrence relation is correct by showing 
 \[F(i) = \min_{x \in C(i)} (w_x + F(\text{next}(x)))\]
 
-$F(i)$ is the minimum total work needed to produce a valid schedule using jobs $i,i+1,\dots,n$. $\forall [a_i, b_i] \in C(j), ~a_i < b_{J(i)} \text{ (job $i$ must overlap with job $J(i)$) }\tand b_i > b_{J(i)}$ ($J(i)$ is the job which ends earliest). Therefore $b_{J(i)} - 1 \in [a_i, b_i], ~\forall [a_i, b_i] \in C(j)$ and so all jobs in $C(i)$ overlap each other. We only need to pick one.
+$F(i)$ is the minimum total work needed to produce a valid schedule using jobs $i,i+1,\dots,n$.
 
 By definition, $F(next(x))$ is the minimum workload needed to fill up the time not covered by $[a_i, b_i], ~\forall [a_i, b_i] \in C(j)$. Adding $[a_i, b_i]$ to the schedule determined by backtracking the formation of $F(next(x))$ covers all jobs $i, \dots, n-1$. Therefore, $\{w(x) + F(\text{next}(x))\}_{x \in C(i)}$ produces valid schedules and since $F(i)$ is the the minimum total work to produce a valid schedule...
 

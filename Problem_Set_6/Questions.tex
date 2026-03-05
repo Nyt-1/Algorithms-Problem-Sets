@@ -1,0 +1,182 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,amsthm,amssymb,amscd,epsfig,url}
+\usepackage{fullpage}
+\usepackage{times}
+\usepackage{mathdots}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, automata, positioning}
+
+\def\ZZ{{\mathbb Z}}
+\def\QQ{{\mathbb Q}}
+\def\RR{{\mathbb R}}
+\def\TT{{\mathcal{C} T}}
+\def\KK{{\mathcal{C} K}}
+\newcommand{\hus}{\hfill\break}
+\newcommand{\bull}{\textbullet\;\;}
+\def\iso{{\operatorname{\ \approx \ }}}   % isomorphism
+\def\im{{\operatorname{im}}}              % image
+\def\Hom{{\operatorname{Hom}}}           % homomorphisms
+\def\line{{\operatorname{line} \,}}       % line graph
+\def\sd{{\operatorname{sd \,}}}           % first edge subdivision graph
+\def\coker{{\operatorname{coker}}}        % cokernel
+\def\lcm{{\operatorname{lcm}}}             % least common multiple
+\newcommand{\gcdd}{\gamma}              
+\def\del{{\partial}}                      % signed incidence matrix
+\def\<{{\langle}} \def\>{{\rangle}}       % Inner product
+\def\ZC{{Z^\#}}                           % cycle space
+\setlength{\textheight}{9in}               
+%\setlength{\textwidth}{6in}               % width of text
+%\setlength{\oddsidemargin}{0in}           % odd page left margin
+%\setlength{\evensidemargin}{0in}          % even page left margin 
+
+\title{Problem Set 6}
+\author{CMSC 27230: Honors Theory of Algorithms}
+\date{Assigned February 20, 2026, Due March 6, 2026}
+
+\begin{document}
+\maketitle
+
+\thispagestyle{empty}
+\section*{Problem 0: Collaborators and Outside Sources}
+Who were your collaborators (if any)? Which outside sources (if any) did you use?
+\section*{Problem 1: NP (20 points)}
+For each of the following yes/no problems, either show that the problem is in NP or explain why we should believe that it is not in NP. Hint is available.
+\begin{enumerate}
+\item[(a)] 5 points: Fixed-length path: Given a directed graph $G$ on $n$ vertices, two vertices $s,t \in V(G)$, and a natural number $k \in [n-1]$, is there a path of length exactly $k$ from $s$ to $t$? Note that a path is not allowed to visit any vertex more than once.
+\item[(b)] 5 points: Maximum clique size: Recall that a clique is a set of vertices $V$ such that every pair of vertices in $V$ are adjacent to each other. Given a graph $G$ and a natural number $k \in \mathbb{N}$, is the size of the largest clique in $G$ equal to $k$?
+\item[(c)] 5 points: Network resiliency: You are in charge of a network and you would like to know that your network is resilient. In particular, you would like to ask, if k connections are shut down, is
+the network still guaranteed to be connected?
+We can model this problem as follows. Given an undirected graph $G = (V,E)$, is it true that for every set of edges $E_{lost}$ of size at most $k$ (where $k$ does not have to be constant), the graph $G' = (V,E \setminus E_{lost}$ is connected?
+\item[(d)] 5 points: Chromatic number equals $3$: Recall that the chromatic number $\chi(G)$ of a graph $G$ is the minimum number of colors needed to color the vertices of $G$ so that no two adjacent vertices have the same color. Given an undirected graph $G$, is $\chi(G) = 3$?
+\end{enumerate}
+Notes:
+\begin{enumerate}
+\item For parts a, b, and c, $n^{k}$ is not polynomial time as $k$ may depend on $n$.
+\item For each of these problems which you believe is not in NP, you should explain why it is difficult to verify a yes answer and why you believe the problem is hard. 
+\item Each part of the this problem will be graded as a T/F question.
+\end{enumerate}
+\begin{remark}
+One way to give strong evidence that a problem is not in NP is to show that the problem is co-NP-hard (see the explanation below). You do not need to do this, though you are welcome to do so.
+\end{remark}
+\begin{definition}
+A problem is in co-NP if it is easy to verify a NO answer. In other words, a problem is in co-NP if and only if its negation is in NP.
+\end{definition}
+\begin{definition}
+A problem is co-NP hard if every problem in co-NP is poly-time reducible to it.
+\end{definition}
+This means that we can show that a problem $B$ is co-NP-hard by choosing an NP-complete problem $A$ and reducing the negation of $A$ to $B$. In other words, given an instance $X$ of problem $A$, we should construct an instance of problem $B$ which  has the opposite answer as $X$.
+\section*{Problem 2: Subway Surfers With Keys (20 points, 5 extra credit points available)}
+In the Subway Surfers game, a runner runs along subway tracks while trying to collect coins and dodge trains and other obstacles. We consider a variant of this game where we have $k$ types of doors and keys where a door is only unlocked by a key of the corresponding type. To model this game, we have a track with $3$ rows and $n$ columns. For all $i \in [3]$ and $j \in [n]$, the space $x_{ij}$ contains one of the following:
+\begin{enumerate}
+\item Empty space.
+\item A coin.
+\item A train or other obstacle.
+\item A key of type $t$ for some $t \in [k]$.
+\item A door of type $t$ for some $t \in [k]$.
+\end{enumerate}
+The runner starts in the space $x_{11}$. At each step, the runner moves one column to the right and either moves one row up, stays in the same row, or moves one row down. The effects of the spaces are as follows:
+\begin{enumerate}
+\item If the new space is empty, nothing happens.
+\item If the new space contains a coin, the runner collects it and continues on. 
+\item If the new space has a train or other obstacle, the game ends and you lose. If the new space is empty, nothing happens and the runner continues running.
+\item If the new space has a key of type $t$ then you gain this key if you do not currently have a key of type $t$. If you already have a key of type $t$, nothing happens.
+\item If the new space has a door of type $t$ then if you have a key of type $t$, you lose this key and continue on. If you do not have a key of type $t$ then the door becomes an obstacle and you lose.
+\end{enumerate}
+More precisely, we can make the following definitions:
+\begin{definition}
+We define a valid path for the runner to be a sequence $P = (i_1,\ldots,i_n)$ (which corresponds to the sequence of spaces $(x_{{i_1}1}, x_{{i_2}2}, \ldots, x_{{i_n}n})$) such that 
+\begin{enumerate}
+\item $i_1 = 1$ and for all $j \in [n]$, $1 \leq i_j \leq 3$ (the runner starts in the space $x_{11}$ and does not go off of the track).
+\item For all $j \in [n-1], |i_{j} - i_{j-1}| \leq 1$ (the runner does not move more than $1$ row up or down at each step).
+\item For all $j \in [n]$, the space $x_{{i_j}j}$ does not contain an obstacle. Moreover, if $x_{{i_j}j}$ contains a door of type $t$ then there exists a $j' < j$ such that $x_{{i_{j'}}{j'}}$ contained a key of type $t$ and there is no $j''$ such that $j' < j'' < j$ and $x_{{i_{j''}}{j''}}$ contained a door of type $t$.
+\end{enumerate}
+We define the score of $P$ to be $s(P) = |\{j:x_{{i_j}j} \text{ contains a coin}\}|$
+\end{definition}
+Consider the following problem. Given an instance of this game (you know where everything is ahead of time), is there a valid path whose score is at least $S$?
+\begin{enumerate}
+\item 5 points: Show that this problem is in NP.
+\item 15 points: Prove that this problem is NP-hard.
+\item 5 points extra credit: In parametrized complexity, a problem which has a parameter $k$ as well as the input size $n$ is fixed parameter tractable if there is an algorithm which solves the problem in time $f(k)poly(n)$ for some function $f$. Show that this problem is fixed parameter tractable (i.e., if $k$ is constant then it can be solved in polynomial time).
+\end{enumerate}
+\section*{Problem 3: Quest Completion (60 points)}
+You are the leader of a team of adventurers and you are trying to complete as many quests as you can. Each quest requires certain resources and may offer other resources as a reward. Unless stated otherwise, quests can be repeated as often as you'd like as long as you have the resources for them. We model this problem as follows.
+\begin{enumerate}
+\item There are $n$ quests and $m$ different types of resources. Each quest has a cost vector $c_i \in \mathbb{Z}^{m}$ and a reward vector $r_i \in \mathbb{Z}^{m}$.
+\item For all $i \in [n]$, $\forall j \in [m], (c_i)_j \geq 0$ and $ (r_i)_j \geq 0$ (no negative costs or rewards)
+\item For all $i \in [n]$, $\sum_{j=1}^{m}{(c_i)_j} \geq 1$ (no free quests)
+\item We have starting resources $s \in \mathbb{Z}^m$ where for all $j \in [m]$, $s_j \geq 0$
+\item A sequence of quests $(i_1,\ldots,i_k)$ is valid if for all integers $t \in [0,k]$ and all $j \in [m]$, 
+\[
+\sum_{q = 0}^{t}{(r_{i_q})_j} \geq (c_{i_{t+1}})_j
+\]
+where we take $r_{i_0} = s$ and we take $c_{k+1} = 0$. In other words, we always have enough resources for our next quest.
+\item To avoid infinite loops, we require that if $H$ is the directed graph with vertices $[n]$ and edges $\{(i,i'): \exists j: (r_i)_j(c_{i'})_j > 0\}$ then $H$ is acyclic. In other words, the rewards for quest $i$ cannot help you obtain any of the required resources to complete quest $i$ again.
+\end{enumerate}
+We are then asked, is it possible to complete at least $k$ quests? Note that $k$ may be exponential in $n$.
+\begin{example}
+If there $n$ quests, $m = n$, and we have the following starting resources, costs, and rewards:
+\begin{enumerate}
+\item $s_1 = 1$ and $\forall j \in [2,n], s_j = 0$
+\item $\forall i,j \in [n]$, $(c_i)_j = 1$ if $i = j$ and $(c_i)_j = 0$ otherwise.
+\item $\forall i,j \in [n]$, $(r_i)_j = 2$ if $j = i+1$ and $(r_i)_j = 0$ otherwise.
+\end{enumerate}
+then we will be able to complete quest $i$ $2^{i-1}$ times. Thus, we will be able to complete a total of $k = \sum_{i=1}^{n}{2^{i-1}} = 2^n - 1$ quests. In this case, $H$ is the directed graph with vertices $V(H) = \{i: i \in [n]\}$ and edges $E(H) = \{(i,i+1): i \in [n-1]\}$.
+\end{example}
+\begin{example}
+An example of a quests and rewards which are not allowed is as follows. If we had that quest 1 required one apple and gave two oranges as a reward and we had that quest 2 cost one orange and gave two apples as a reward then starting from a single apple or orange we could obtain an infinite number of apples and oranges by alternating between quests 1 and 2. However, this violates condition 6 as in this case $H$ would contain both an edge from quest 1 to quest 2 and an edge from quest 2 to quest 1, so $H$ would not be acyclic. 
+\end{example}
+\begin{enumerate}
+\item[(a)] 10 points: Show that this problem is in NP by giving a non-deterministic \\ $poly(n,m,log(k),log(\max_{i \in [n],j \in [m]}{\{\max\{(c_i)_j, (r_i)_j), s_j\}\}}))$ time algorithm for it. Hint is available. %Note: Partial credit will be given for a non-deterministic time $poly(n,m,k)$ time algorithm.
+\item[Parts b-f:] For each of the following scenarios, decide whether the variation of the problem is in P or is NP-complete. If it is in P, show that there is a polynomial time algorithm to solve it. If it is NP-complete, give a polynomial time reduction to it from a known NP-complete problem.
+\item[(b)] 10 points: Scenario 1: Cheap quests. Scenario condition:
+\begin{enumerate}
+\item[1.] $\forall i \in [n]$, $\sum_{j=1}^{m}{(c_i)_j} = 1$ (Every quest requires exactly one resource)
+\end{enumerate}
+Hint is available.
+\item[(c)] 10 points: Scenario 2: Slightly more expensive quests. Scenario condition:
+\begin{enumerate}
+\item[1.] $\forall i \in [n]$, $1 \leq \sum_{j=1}^{m}{(c_i)_j} \leq 2$ (Every quest requires between one and two resources)
+\end{enumerate}
+Hint is available.
+\item[(d)] 10 points: Scenario 3: Unusual demands, no rewards. Scenario conditions:
+\begin{enumerate}
+\item[1.] $s \in \mathbb{R}^m$ is the all ones vector (you start with one of each resource).
+\item[2.] $\forall i, r_i = 0$ (there are no rewards, all of your resources are given to you at the start).
+\item[3.] $\forall j, |\{i:(c_i)_j \geq 1\}| \leq 2$ (for any resource, there are at most two quests which require it).
+\end{enumerate}
+Hint is available.
+\item[(e)] 10 points: Scenario 4: One time, flexible, cheap quests but no rewards. Scenario conditions:
+\begin{enumerate}
+\item[1.] $\forall i, r_i = 0$ (there are no rewards, all of your resources are given to you at the start)
+\item[2.] $s \in \mathbb{R}^m$ is the all ones vector (you start with one of each resource)
+\item[3.] Unlike the other scenarios, each quest now only requires one of several resources rather than a fixed resource or resources.
+\item[4.] Unlike the other scenarios, every quest can be taken at most once.
+\end{enumerate}
+\item[(f)] 10 points: Scenario 5: Only two types of resources: Supplies and treasure. Scenario conditions:
+\begin{enumerate}
+\item[1.] $m = 2$ and we call the first type of resource supplies and the second type of resource treasure.
+\item[2.] $s_2 = 0$ (we start with supplies but not treasure).
+\item[3.] There is one cash in quest which only requires one treasure and gives no reward (besides completing the quest). All other quests require some amount of supplies and give some amount of treasure as a reward.
+\end{enumerate}
+Hint is available.
+\end{enumerate}
+Note: Parts a through e will be graded as either Satisfactory, Needs Improvement, or Unsatisfactory. Part f will be graded as either Exemplary, Satisfactory, Needs Improvement, or Unsatisfactory.
+\newpage
+\section*{Hints}
+3a. Given a proposed set of quests, a necessary condition for being able to complete these quests is that the sum of the starting resources plus the quest rewards minus the quest costs must be non-negative for every type of resource. Show that because of condition 6, this condition is also sufficient.\\
+3b. If you are given an extra resource of a type $i$, how many additional quests will this extra resource enable you to complete?\\
+3c. Try creating quests which correspond to literals $x_i$ and $\neg{x}_i$ and quests which correspond to clauses.\\
+3d. Think of the quests as vertices and each resource as an edge between the two quests which demand it.\\
+3f: Does this problem remind you of one of the problems we covered in class? How do we need to adjust this problem in order to obtain an exact correspondence?
+\end{document}
